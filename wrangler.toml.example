@@ -1,0 +1,8 @@
+name = "ahmed-portfolio"
+compatibility_date = "2026-09-06"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ahmed-portfolio-db"
+database_id = "PUT-YOUR-D1-DATABASE-ID-HERE"
