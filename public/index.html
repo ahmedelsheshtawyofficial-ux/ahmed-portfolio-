@@ -659,13 +659,18 @@ footer p{color:#777!important;}
 .modal-box{max-width:1100px!important;max-height:88vh!important;overflow:auto!important;padding:46px!important;background:#f4f2ec!important;border-radius:28px!important;position:relative;}
 .modal-box .modal-kicker{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
 .modal-box .modal-title{font-size:clamp(30px,4vw,52px);line-height:.98;letter-spacing:-.055em;margin-bottom:28px;max-width:760px;}
-.case-visuals{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;margin:0 0 34px;}
+.case-visuals{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:0 0 34px;}
 .case-panel{background:#0a0a0a;border:1px solid #242424;border-radius:18px;overflow:hidden;min-height:330px;position:relative;}
+.case-panel.primary-media{grid-column:span 1;}
+.case-panel.extra-media{min-height:300px;}
 .case-panel-head{height:48px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #292929;color:#fff;}
 .case-panel-head span:first-child{font:500 10px var(--mono);letter-spacing:.08em;color:#aaa;text-transform:uppercase;}
 .case-panel-head span:last-child{font:500 10px var(--mono);color:var(--accent);}
 .asset-frame{height:calc(100% - 48px);min-height:280px;position:relative;background:#101010;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-.asset-frame img{width:100%;height:100%;object-fit:cover;display:block;}
+.asset-frame img{width:100%;height:100%;object-fit:contain;display:block;padding:10px;box-sizing:border-box;}
+.asset-frame iframe{width:100%;height:100%;min-height:330px;border:0;background:#fff;display:block;}
+.asset-open{position:absolute;right:12px;bottom:12px;background:#f4f2ec;color:#111;border:1px solid #333;border-radius:999px;padding:7px 11px;font:500 9px var(--mono);text-decoration:none;z-index:3;}
+.asset-open:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
 .asset-frame img.asset-missing{display:none;}
 .asset-fallback{position:absolute;inset:0;padding:22px;display:flex;flex-direction:column;justify-content:center;gap:18px;color:#fff;}
 .asset-fallback.hidden{display:none;}
@@ -688,7 +693,7 @@ footer p{color:#777!important;}
 .modal-box h4{margin-top:0!important;}
 .modal-copy{padding-top:2px;}
 .modal-media-note{font:500 10px var(--mono);color:#8a8f8f;text-transform:uppercase;letter-spacing:.05em;margin-top:-22px;margin-bottom:24px;}
-@media(max-width:760px){.modal-box{padding:28px!important;border-radius:20px!important;}.case-visuals,.modal-content-grid{grid-template-columns:1fr;}.case-panel{min-height:280px;}.asset-frame{min-height:230px;}.modal-box .modal-title{font-size:36px;}}
+@media(max-width:760px){.modal-box{padding:28px!important;border-radius:20px!important;}.case-visuals,.modal-content-grid{grid-template-columns:1fr;}.case-panel{min-height:280px;}.asset-frame{min-height:230px;}.asset-frame iframe{min-height:230px;}.modal-box .modal-title{font-size:36px;}}
 
 /* Modal */
 .modal-overlay{background:rgba(0,0,0,.82);}
@@ -1546,9 +1551,35 @@ document.addEventListener('DOMContentLoaded', function(){
     if(!row)return;
     var overlay=document.getElementById('modalOverlay'), box=document.getElementById('modalBox');
     var ar=currentLang==='ar';
-    var T=ar?{model:'النموذج المالي',dash:'لوحة التحليل',overview:'نظرة عامة',problem:'مشكلة العمل',objective:'الهدف',data:'البيانات والافتراضات',analysis:'التحليل',findings:'أهم النتائج',lessons:'الدروس المستفادة',close:'إغلاق دراسة الحالة'}:{model:'Financial Model',dash:'Analysis Dashboard',overview:'Overview',problem:'Business Problem',objective:'Objective',data:'Data & Assumptions',analysis:'Analysis',findings:'Key Findings',lessons:'Lessons Learned',close:'Close case study'};
-    function panel(title,url,kind){var fallback=kind==='model'?'model-sheet':'dashboard'; return '<div class="case-panel"><div class="case-panel-head"><span>'+title+'</span><span>'+(kind==='model'?'MODEL':'DASHBOARD')+'</span></div><div class="asset-frame">'+(url?'<img src="'+esc(url)+'" alt="'+esc(langText(row,'title'))+'">':'')+'<div class="asset-fallback '+(url?'hidden':'')+'"><span class="fallback-label">'+(kind==='model'?'MODEL PREVIEW':'DASHBOARD PREVIEW')+'</span>'+(kind==='model'?'<div class="model-sheet"><div class="ms-top"><span class="ms-dot"></span><span class="ms-dot"></span><span class="ms-dot"></span></div><div class="ms-row head"><span>Line Item</span><span>2024A</span><span>2025A</span><span>2026E</span><span>2027E</span></div><div class="ms-row"><span>Revenue</span><span>—</span><span>—</span><span class="positive">▲</span><span class="positive">▲</span></div><div class="ms-row"><span>EBITDA</span><span>—</span><span>—</span><span class="positive">▲</span><span class="positive">▲</span></div></div>':'<div class="dashboard"><div class="dash-card"><small>Revenue</small><strong>—</strong></div><div class="dash-card"><small>Margin</small><strong>—</strong></div><div class="dash-card dash-wide"><small>Performance Trend</small></div></div>')+'</div></div></div>';}
-    box.innerHTML='<button class="modal-close" id="modalClose" aria-label="'+T.close+'"><span class="menu-icon">×</span></button><div class="modal-kicker">'+esc(langText(row,'cat'))+'</div><h3 class="modal-title">'+esc(langText(row,'title'))+'</h3><div class="case-visuals">'+panel(T.model,row.model_url,'model')+panel(T.dash,row.dashboard_url,'dash')+'</div><div class="modal-content-grid"><div class="modal-copy"><h4>'+T.overview+'</h4><p>'+esc(langText(row,'overview'))+'</p><h4>'+T.problem+'</h4><p>'+esc(langText(row,'problem'))+'</p><h4>'+T.objective+'</h4><p>'+esc(langText(row,'objective'))+'</p><h4>'+T.data+'</h4><p>'+esc(langText(row,'data'))+'</p></div><div class="modal-copy"><h4>'+T.analysis+'</h4><p>'+esc(langText(row,'analysis'))+'</p><h4>'+T.findings+'</h4><p>'+esc(langText(row,'findings'))+'</p><h4>'+T.lessons+'</h4><p>'+esc(langText(row,'lessons'))+'</p></div></div>';
+    var T=ar?{model:'النموذج المالي',dash:'لوحة التحليل',overview:'نظرة عامة',problem:'مشكلة العمل',objective:'الهدف',data:'البيانات والافتراضات',analysis:'التحليل',findings:'أهم النتائج',lessons:'الدروس المستفادة',close:'إغلاق دراسة الحالة',open:'فتح الملف'}:{model:'Financial Model',dash:'Analysis Dashboard',overview:'Overview',problem:'Business Problem',objective:'Objective',data:'Data & Assumptions',analysis:'Analysis',findings:'Key Findings',lessons:'Lessons Learned',close:'Close case study',open:'Open file'};
+    function mediaUrls(primary,extra){
+      var out=[]; if(primary&&String(primary).trim())out.push(String(primary).trim());
+      String(extra||'').split(/\r?\n/).map(function(x){return x.trim();}).filter(Boolean).forEach(function(x){if(out.indexOf(x)<0)out.push(x);});
+      return out;
+    }
+    function mediaFrame(title,url,kind,index){
+      var u=String(url||'').trim();
+      var isPdf=/\.pdf(?:[?#].*)?$/i.test(u) || /^pdf:/i.test(u);
+      if(/^pdf:/i.test(u))u=u.replace(/^pdf:\s*/i,'');
+      var label=kind==='model'?'MODEL':'DASHBOARD';
+      var content='';
+      if(isPdf){
+        content='<iframe src="'+esc(u)+'" title="'+esc(title)+'" loading="lazy"></iframe><a class="asset-open" href="'+esc(u)+'" target="_blank" rel="noopener">'+T.open+' ↗</a>';
+      }else{
+        content='<img src="'+esc(u)+'" alt="'+esc(title)+'" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.classList.remove(\'hidden\')"><div class="asset-fallback hidden"><span class="fallback-label">MEDIA PREVIEW</span><div class="dashboard"><div class="dash-card"><small>'+label+'</small><strong>—</strong></div><div class="dash-card"><small>URL</small><strong>↗</strong></div></div></div><a class="asset-open" href="'+esc(u)+'" target="_blank" rel="noopener">'+T.open+' ↗</a>';
+      }
+      return '<div class="case-panel '+(index===0?'primary-media':'extra-media')+'"><div class="case-panel-head"><span>'+esc(title)+'</span><span>'+label+(index>0?' · '+(index+1):'')+'</span></div><div class="asset-frame">'+content+'</div></div>';
+    }
+    function fallbackPanel(title,kind){
+      var label=kind==='model'?'MODEL PREVIEW':'DASHBOARD PREVIEW';
+      return '<div class="case-panel primary-media"><div class="case-panel-head"><span>'+title+'</span><span>'+(kind==='model'?'MODEL':'DASHBOARD')+'</span></div><div class="asset-frame"><div class="asset-fallback"><span class="fallback-label">'+label+'</span>'+(kind==='model'?'<div class="model-sheet"><div class="ms-top"><span class="ms-dot"></span><span class="ms-dot"></span><span class="ms-dot"></span></div><div class="ms-row head"><span>Line Item</span><span>2024A</span><span>2025A</span><span>2026E</span><span>2027E</span></div><div class="ms-row"><span>Revenue</span><span>—</span><span>—</span><span class="positive">▲</span><span class="positive">▲</span></div><div class="ms-row"><span>EBITDA</span><span>—</span><span>—</span><span class="positive">▲</span><span class="positive">▲</span></div></div>':'<div class="dashboard"><div class="dash-card"><small>Revenue</small><strong>—</strong></div><div class="dash-card"><small>Margin</small><strong>—</strong></div><div class="dash-card dash-wide"><small>Performance Trend</small></div></div>')+'</div></div></div>';
+    }
+    var model=mediaUrls(row.model_url,row.model_gallery), dash=mediaUrls(row.dashboard_url,row.dashboard_gallery), panels=[];
+    model.forEach(function(u,n){panels.push(mediaFrame(T.model,u,'model',n));});
+    dash.forEach(function(u,n){panels.push(mediaFrame(T.dash,u,'dash',n));});
+    if(!model.length)panels.push(fallbackPanel(T.model,'model'));
+    if(!dash.length)panels.push(fallbackPanel(T.dash,'dash'));
+    box.innerHTML='<button class="modal-close" id="modalClose" aria-label="'+T.close+'"><span class="menu-icon">×</span></button><div class="modal-kicker">'+esc(langText(row,'cat'))+'</div><h3 class="modal-title">'+esc(langText(row,'title'))+'</h3><div class="case-visuals">'+panels.join('')+'</div><div class="modal-content-grid"><div class="modal-copy"><h4>'+T.overview+'</h4><p>'+esc(langText(row,'overview'))+'</p><h4>'+T.problem+'</h4><p>'+esc(langText(row,'problem'))+'</p><h4>'+T.objective+'</h4><p>'+esc(langText(row,'objective'))+'</p><h4>'+T.data+'</h4><p>'+esc(langText(row,'data'))+'</p></div><div class="modal-copy"><h4>'+T.analysis+'</h4><p>'+esc(langText(row,'analysis'))+'</p><h4>'+T.findings+'</h4><p>'+esc(langText(row,'findings'))+'</p><h4>'+T.lessons+'</h4><p>'+esc(langText(row,'lessons'))+'</p></div></div>';
     overlay.classList.add('open'); document.getElementById('modalClose').addEventListener('click',function(){overlay.classList.remove('open');});
   }
   async function getRows(endpoint){var r=await fetch(endpoint,{cache:'no-store'});if(!r.ok)throw Error('load failed');return await r.json();}

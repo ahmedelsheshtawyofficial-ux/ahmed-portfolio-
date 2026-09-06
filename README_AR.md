@@ -1,27 +1,37 @@
-# موقع أحمد — Cloudflare فقط (بدون Supabase)
+# Ahmed Elsheshtawy — Full Website CMS
 
-هذه النسخة تستخدم Cloudflare Pages + Pages Functions + D1 فقط.
-لا يوجد Supabase ولا Node.js مطلوب بعد النشر.
+هذه النسخة توسّع لوحة التحكم لتشمل الموقع بالكامل مع الحفاظ على تصميم الموقع وتأثيراته الحالية.
 
-## ماذا يدير الأدمن؟
-- إضافة / تعديل / حذف Status / Insights.
-- نشر أو إخفاء أي Status.
-- عربي + English.
-- ترتيب المنشورات والروابط والتواريخ.
+## الأقسام القابلة للإدارة
+- Projects
+- Videos
+- Insights / Status
+- What I Work On
+- My Approach
+- Skills & Tools
+- Learning & Development / Certifications
+- Page Content (Home / About / Work / Videos / Approach / Skills / Certifications / Insights / Brand / Contact / Footer)
+- Navigation
+- Contact & Social / Portrait / Favicon
 
-## النشر المجاني
-1. أنشئ حساب Cloudflare مجاني.
-2. أنشئ D1 Database باسم `ahmed-portfolio-db`.
-3. نفّذ ملف `migrations/0001_posts.sql` في D1 SQL Editor.
-4. ارفع المشروع إلى GitHub.
-5. أنشئ Cloudflare Pages project من GitHub.
-6. اجعل build command فارغًا وBuild output directory = `.`.
-7. أضف D1 binding باسم `DB` إلى قاعدة البيانات.
-8. أضف Secrets/Variables:
-   - `ADMIN_PASSWORD` = كلمة مرور الأدمن
-   - `ADMIN_SECRET` = قيمة عشوائية طويلة جدًا (32+ حرفًا)
-9. أعد النشر.
+## الدخول
+Secrets المطلوبة في Cloudflare: `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_SECRET`.
 
-لوحة التحكم: `/admin.html`
+## النشر
+Cloudflare Worker + Static Assets + D1. استخدم `npx wrangler deploy`.
 
-مهم: المجاني ليس ضمانًا أبديًا. حاليًا Cloudflare يوفّر Workers Free وD1 Free، لكن توجد حدود استخدام يومية. إذا تجاوزت الحد اليومي، تتوقف طلبات قاعدة البيانات حتى إعادة الضبط؛ البيانات لا تُحذف. راجع حدود Cloudflare قبل الاعتماد التجاري.
+## ملاحظات
+- الجداول الجديدة يتم إنشاؤها تلقائيًا عند أول طلب API.
+- البيانات القديمة للمشاريع والفيديوهات يتم الحفاظ عليها.
+- لا حاجة لتشغيل migration يدويًا لهذه النسخة، لكن ملف migration يمكن الاحتفاظ به في المستودع كمرجع.
+- الصور تقبل روابط مباشرة حاليًا؛ رفع ملفات حقيقي يمكن إضافته لاحقًا عبر R2 إذا لزم.
+
+
+### V6 إضافات
+- تحكم كامل في هوية الموقع: Brand Mark وLoader وFavicon وPortrait.
+- تحكم في Browser Title وMeta Description وAccent Color وتفعيل/تعطيل animations.
+- تحكم في روابط وظهور Email / LinkedIn / WhatsApp / Facebook.
+- تحكم في رابط وزر View More on LinkedIn.
+- استعادة تأثير FMVA® البرتقالي الكبير في بطاقة الشهادة مع watermark ديناميكي.
+- الصورة الشخصية الجديدة موجودة افتراضيًا في `/assets/profile.png`.
+- جميع الـ animations والـ layout الأصلية محفوظة، والتعديلات كلها من لوحة التحكم.
