@@ -5,4 +5,4 @@ pages_build_output_dir = "."
 [[d1_databases]]
 binding = "DB"
 database_name = "ahmed-portfolio-db"
-database_id = "PUT-YOUR-D1-DATABASE-ID-HERE"
+database_id = "ec6c9bd0-dd8f-4823-9d34-384de940bb04"
