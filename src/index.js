@@ -118,7 +118,7 @@ function firstProjectImage(row,origin){
 async function renderPage(request,env,projectSlug){
   const reqUrl=new URL(request.url);
   const origin=reqUrl.origin;
-  const assetReq=new Request(new URL('/index.html',reqUrl).toString(),request);
+  const assetReq=new Request(new URL('/',reqUrl).toString(),request);
   const assetRes=await env.ASSETS.fetch(assetReq);
   if(!assetRes.ok) return assetRes;
   let title=null,desc=null,image=null,status=200;
