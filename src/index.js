@@ -107,12 +107,52 @@ async function settingsApi(request,env){ const isAdmin=await validCookie(request
 
 async function api(request,env){ const url=new URL(request.url); if(url.pathname==='/api/login'&&request.method==='POST'){let b;try{b=await request.json()}catch{return json({error:'بيانات غير صالحة'},400)}if(!env.ADMIN_USERNAME||!env.ADMIN_PASSWORD)return json({error:'بيانات دخول الأدمن غير مكتملة في Cloudflare'},500);if(b.username!==env.ADMIN_USERNAME||b.password!==env.ADMIN_PASSWORD)return json({error:'اسم المستخدم أو كلمة المرور غير صحيحة'},401);if(!env.ADMIN_SECRET)return json({error:'ADMIN_SECRET غير مضبوط في Cloudflare'},500);const c=await makeCookie(env.ADMIN_SECRET);return new Response(JSON.stringify({ok:true}),{headers:{'content-type':'application/json','set-cookie':setCookie(c)}});} if(url.pathname==='/api/logout'&&request.method==='POST')return new Response(JSON.stringify({ok:true}),{headers:{'content-type':'application/json','set-cookie':clearCookie()}}); if(url.pathname==='/api/me'&&request.method==='GET')return json({authenticated:await validCookie(request,env.ADMIN_SECRET)}); await ensureTables(env); if(url.pathname==='/api/tools')return toolsApi(request,env); if(url.pathname==='/api/settings')return settingsApi(request,env); const map={'/api/projects':'projects','/api/videos':'videos','/api/skills':'skills','/api/certifications':'certs','/api/services':'services','/api/approach':'approach','/api/navigation':'navigation','/api/sections':'sections'}; if(map[url.pathname])return collectionApi(request,env,map[url.pathname]); if(url.pathname==='/api/posts'){const isAdmin=await validCookie(request,env.ADMIN_SECRET);if(request.method==='GET'){const q=isAdmin?'SELECT * FROM posts ORDER BY sort_order ASC,id ASC':'SELECT * FROM posts WHERE published=1 ORDER BY sort_order ASC,id ASC';const {results}=await env.DB.prepare(q).all();return json(results||[])}if(!isAdmin)return json({error:'غير مصرح'},401);if(request.method==='POST'){let body;try{body=await request.json()}catch{return json({error:'JSON غير صالح'},400)}const d=clean(body,POST_FIELDS);if(!d.slug||!d.title_en)return json({error:'Slug و Title EN مطلوبان'},400);try{const r=await env.DB.prepare(`INSERT INTO posts (${Object.keys(d).join(',')}) VALUES (${Object.keys(d).map(()=>'?').join(',')})`).bind(...Object.values(d)).run();return json({id:r.meta.last_row_id,...d},201)}catch(e){return json({error:String(e.message||e)},400)}}if(request.method==='PUT'){let body;try{body=await request.json()}catch{return json({error:'JSON غير صالح'},400)}const id=Number(body.id);if(!id)return json({error:'ID مطلوب'},400);const d=clean(body,POST_FIELDS);delete d.id;if(!Object.keys(d).length)return json({error:'لا توجد تغييرات'},400);try{const r=await env.DB.prepare(`UPDATE posts SET ${Object.keys(d).map(k=>`${k}=?`).join(',')} WHERE id=?`).bind(...Object.values(d),id).run();return json({ok:!!r.meta.changes})}catch(e){return json({error:String(e.message||e)},400)}}if(request.method==='DELETE'){const id=Number(url.searchParams.get('id'));if(!id)return json({error:'ID مطلوب'},400);const r=await env.DB.prepare('DELETE FROM posts WHERE id=?').bind(id).run();return json({ok:!!r.meta.changes})}} return json({error:'Not Found'},404); }
 
+
+function htmlEscape(value){ return String(value??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function projectPreviewImage(row){
+  const urls=[];
+  const add=(v)=>{ try{ const a=JSON.parse(v||'[]'); if(Array.isArray(a)) a.forEach(x=>{ if(typeof x==='string') urls.push(x); else if(x&&x.image_url) urls.push(String(x.image_url)); }); }catch{} };
+  add(row.model_parts); add(row.dashboard_parts); add(row.model_images); add(row.dashboard_images); add(row.model_gallery); add(row.dashboard_gallery);
+  for(const x of [row.model_url,row.dashboard_url,...urls]) if(x && /\.(png|jpe?g|gif|webp|svg|avif)(?:[?#].*)?$/i.test(String(x))) return String(x);
+  return urls[0] || '';
+}
+async function projectSharePage(request,env,slug){
+  const {results}=await env.DB.prepare('SELECT * FROM projects WHERE slug=? AND published=1 LIMIT 1').bind(slug).all();
+  const row=(results||[])[0];
+  if(!row) return env.ASSETS.fetch(request);
+  const origin=new URL(request.url).origin;
+  const canonical=origin+'/project/'+encodeURIComponent(String(row.slug));
+  const title=String(row.title_en||row.title_ar||'Project');
+  const description=String(row.desc_en||row.desc_ar||'Financial analysis and modeling project by Ahmed Elsheshtawy.');
+  const image=projectPreviewImage(row);
+  const imageUrl=image ? (image.startsWith('http') ? image : new URL(image.replace(/^\//,''),origin+'/').toString()) : '';
+  const assetResponse=await env.ASSETS.fetch(new Request(new URL('/',request.url),request));
+  let html=await assetResponse.text();
+  const meta=[
+    '<meta name="description" content="'+htmlEscape(description)+'">',
+    '<meta property="og:type" content="article">',
+    '<meta property="og:title" content="'+htmlEscape(title)+'">',
+    '<meta property="og:description" content="'+htmlEscape(description)+'">',
+    '<meta property="og:url" content="'+htmlEscape(canonical)+'">',
+    '<meta property="og:site_name" content="Ahmed Elsheshtawy">',
+    imageUrl ? '<meta property="og:image" content="'+htmlEscape(imageUrl)+'">' : '',
+    imageUrl ? '<meta property="og:image:alt" content="'+htmlEscape(title)+'">' : '',
+    '<meta name="twitter:card" content="summary_large_image">',
+    '<meta name="twitter:title" content="'+htmlEscape(title)+'">',
+    '<meta name="twitter:description" content="'+htmlEscape(description)+'">',
+    imageUrl ? '<meta name="twitter:image" content="'+htmlEscape(imageUrl)+'">' : '',
+    '<link rel="canonical" href="'+htmlEscape(canonical)+'">'
+  ].filter(Boolean).join('');
+  html=html.replace('</head>',meta+'</head>');
+  return new Response(html,{status:200,headers:{'content-type':'text/html;charset=UTF-8','cache-control':'public, max-age=300'}});
+}
+
 export default {async fetch(request,env){
   const url=new URL(request.url);
   if(url.pathname.startsWith('/api/'))return api(request,env);
-  if(/^\/project\/[^/]+\/?$/i.test(url.pathname)){
-    const root=new URL('/',url);
-    return env.ASSETS.fetch(new Request(root.toString(),request));
+  const projectMatch=url.pathname.match(/^\/project\/([^/]+)\/?$/i);
+  if(projectMatch){
+    return projectSharePage(request,env,decodeURIComponent(projectMatch[1]));
   }
   return env.ASSETS.fetch(request);
 }};
