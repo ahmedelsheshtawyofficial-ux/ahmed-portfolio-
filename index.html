@@ -679,6 +679,19 @@ footer p{color:#777!important;}
 .asset-frame img{width:100%;height:100%;object-fit:contain;display:block;padding:10px;box-sizing:border-box;}
 .asset-frame iframe{width:100%;height:100%;min-height:330px;border:0;background:#fff;display:block;}
 .asset-open{position:absolute;right:12px;bottom:12px;background:#f4f2ec;color:#111;border:1px solid #333;border-radius:999px;padding:7px 11px;font:500 9px var(--mono);text-decoration:none;z-index:3;}
+.media-type-badge{font:500 9px var(--mono);letter-spacing:.06em;color:#8e9491;text-transform:uppercase;}
+.case-files{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0 0 34px;}
+.file-card{display:flex;align-items:center;gap:14px;background:#101010;color:#fff;border:1px solid #292929;border-radius:16px;padding:15px 17px;text-decoration:none;transition:transform .2s ease,border-color .2s ease,background .2s ease;}
+.file-card:hover{transform:translateY(-2px);border-color:var(--accent);background:#151515;}
+.file-icon{width:42px;height:42px;border-radius:12px;background:#1d1d1d;display:grid;place-items:center;font-size:20px;flex:0 0 42px;}
+.file-card strong{display:block;font-size:13px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.file-card small{display:block;color:#888;font:500 9px var(--mono);text-transform:uppercase;letter-spacing:.05em;}
+@media(max-width:760px){.case-files{grid-template-columns:1fr;}}
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;padding:24px;z-index:9999;}
+.lightbox.open{display:flex;}
+.lightbox img{max-width:94vw;max-height:90vh;object-fit:contain;border-radius:14px;box-shadow:0 25px 80px rgba(0,0,0,.55);}
+.lightbox-close{position:absolute;top:20px;right:22px;width:44px;height:44px;border:1px solid #444;background:#111;color:#fff;border-radius:50%;font-size:24px;cursor:pointer;}
+.image-preview-link{display:block;width:100%;height:100%;cursor:zoom-in;}
 .asset-open:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
 .asset-frame img.asset-missing{display:none;}
 .asset-fallback{position:absolute;inset:0;padding:22px;display:flex;flex-direction:column;justify-content:center;gap:18px;color:#fff;}
@@ -1581,30 +1594,38 @@ document.addEventListener('DOMContentLoaded', function(){
       String(extra||'').split(/\r?\n/).map(function(x){return x.trim();}).filter(Boolean).forEach(function(x){if(out.indexOf(x)<0)out.push(x);});
       return out;
     }
+    function isImageUrl(u){return /\.(?:png|jpe?g|gif|webp|svg|avif)(?:[?#].*)?$/i.test(String(u||''));}
+    function fileName(u){try{return decodeURIComponent(new URL(u,location.href).pathname.split('/').pop()||'File');}catch{return String(u||'').split('/').pop()||'File';}}
+    function fileType(u){var n=fileName(u).toLowerCase(); if(/\.xlsx?$/.test(n))return 'Excel'; if(/\.pdf$/.test(n))return 'PDF'; if(/\.pptx?$/.test(n))return 'PowerPoint'; if(/\.docx?$/.test(n))return 'Word'; if(/\.(zip|rar|7z)$/.test(n))return 'Archive'; return 'File';}
     function mediaFrame(title,url,kind,index){
       var u=String(url||'').trim();
-      var isPdf=/\.pdf(?:[?#].*)?$/i.test(u) || /^pdf:/i.test(u);
-      if(/^pdf:/i.test(u))u=u.replace(/^pdf:\s*/i,'');
       var label=kind==='model'?'MODEL':'DASHBOARD';
-      var content='';
-      if(isPdf){
-        content='<iframe src="'+esc(u)+'" title="'+esc(title)+'" loading="lazy"></iframe><a class="asset-open" href="'+esc(u)+'" target="_blank" rel="noopener">'+T.open+' ↗</a>';
-      }else{
-        content='<img src="'+esc(u)+'" alt="'+esc(title)+'" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.classList.remove(\'hidden\')"><div class="asset-fallback hidden"><span class="fallback-label">MEDIA PREVIEW</span><div class="dashboard"><div class="dash-card"><small>'+label+'</small><strong>—</strong></div><div class="dash-card"><small>URL</small><strong>↗</strong></div></div></div><a class="asset-open" href="'+esc(u)+'" target="_blank" rel="noopener">'+T.open+' ↗</a>';
-      }
-      return '<div class="case-panel '+(index===0?'primary-media':'extra-media')+'"><div class="case-panel-head"><span>'+esc(title)+'</span><span>'+label+(index>0?' · '+(index+1):'')+'</span></div><div class="asset-frame">'+content+'</div></div>';
+      return '<div class="case-panel '+(index===0?'primary-media':'extra-media')+'"><div class="case-panel-head"><span>'+esc(title)+'</span><span>'+label+(index>0?' · '+(index+1):'')+'</span></div><div class="asset-frame"><a class="image-preview-link" href="#" data-lightbox="'+esc(u)+'" aria-label="'+esc(title)+'"><img src="'+esc(u)+'" alt="'+esc(title)+'" loading="lazy" onerror="this.closest(\'.case-panel\').style.display=\'none\'"></a></div></div>';
+    }
+    function fileCard(title,url,kind,index){
+      var u=String(url||'').trim(), label=kind==='model'?'MODEL FILE':'DASHBOARD FILE';
+      return '<a class="file-card" href="'+esc(u)+'" target="_blank" rel="noopener"><span class="file-icon">📄</span><span style="min-width:0"><strong>'+esc(fileName(u))+'</strong><small>'+esc(label)+' · '+esc(fileType(u))+'</small></span><span style="margin-left:auto;font-size:18px;color:var(--accent)">↗</span></a>';
     }
     function fallbackPanel(title,kind){
       var label=kind==='model'?'MODEL PREVIEW':'DASHBOARD PREVIEW';
       return '<div class="case-panel primary-media"><div class="case-panel-head"><span>'+title+'</span><span>'+(kind==='model'?'MODEL':'DASHBOARD')+'</span></div><div class="asset-frame"><div class="asset-fallback"><span class="fallback-label">'+label+'</span>'+(kind==='model'?'<div class="model-sheet"><div class="ms-top"><span class="ms-dot"></span><span class="ms-dot"></span><span class="ms-dot"></span></div><div class="ms-row head"><span>Line Item</span><span>2024A</span><span>2025A</span><span>2026E</span><span>2027E</span></div><div class="ms-row"><span>Revenue</span><span>—</span><span>—</span><span class="positive">▲</span><span class="positive">▲</span></div><div class="ms-row"><span>EBITDA</span><span>—</span><span>—</span><span class="positive">▲</span><span class="positive">▲</span></div></div>':'<div class="dashboard"><div class="dash-card"><small>Revenue</small><strong>—</strong></div><div class="dash-card"><small>Margin</small><strong>—</strong></div><div class="dash-card dash-wide"><small>Performance Trend</small></div></div>')+'</div></div></div>';
     }
-    var model=mediaUrls(row.model_url,row.model_gallery), dash=mediaUrls(row.dashboard_url,row.dashboard_gallery), panels=[];
-    model.forEach(function(u,n){panels.push(mediaFrame(T.model,u,'model',n));});
-    dash.forEach(function(u,n){panels.push(mediaFrame(T.dash,u,'dash',n));});
+    var modelLegacy=mediaUrls(row.model_url,row.model_gallery), dashLegacy=mediaUrls(row.dashboard_url,row.dashboard_gallery);
+    var modelImages=mediaUrls('',row.model_images), dashImages=mediaUrls('',row.dashboard_images);
+    var modelFiles=mediaUrls('',row.model_files), dashFiles=mediaUrls('',row.dashboard_files);
+    var panels=[], files=[];
+    modelLegacy.forEach(function(u){if(isImageUrl(u)) modelImages.push(u); else modelFiles.push(u);});
+    dashLegacy.forEach(function(u){if(isImageUrl(u)) dashImages.push(u); else dashFiles.push(u);});
+    modelImages=modelImages.filter(function(u,i,a){return a.indexOf(u)===i;}); dashImages=dashImages.filter(function(u,i,a){return a.indexOf(u)===i;});
+    modelFiles=modelFiles.filter(function(u,i,a){return a.indexOf(u)===i;}); dashFiles=dashFiles.filter(function(u,i,a){return a.indexOf(u)===i;});
+    modelImages.forEach(function(u,n){panels.push(mediaFrame(T.model,u,'model',n));});
+    dashImages.forEach(function(u,n){panels.push(mediaFrame(T.dash,u,'dash',n));});
+    modelFiles.forEach(function(u,n){files.push(fileCard(T.model,u,'model',n));});
+    dashFiles.forEach(function(u,n){files.push(fileCard(T.dash,u,'dash',n));});
     if(!model.length)panels.push(fallbackPanel(T.model,'model'));
     if(!dash.length)panels.push(fallbackPanel(T.dash,'dash'));
-    box.innerHTML='<button class="modal-close" id="modalClose" aria-label="'+T.close+'"><span class="menu-icon">×</span></button><div class="modal-kicker">'+esc(langText(row,'cat'))+'</div><h3 class="modal-title">'+esc(langText(row,'title'))+'</h3><div class="case-visuals">'+panels.join('')+'</div><div class="modal-content-grid"><div class="modal-copy"><h4>'+T.overview+'</h4><p>'+esc(langText(row,'overview'))+'</p><h4>'+T.problem+'</h4><p>'+esc(langText(row,'problem'))+'</p><h4>'+T.objective+'</h4><p>'+esc(langText(row,'objective'))+'</p><h4>'+T.data+'</h4><p>'+esc(langText(row,'data'))+'</p></div><div class="modal-copy"><h4>'+T.analysis+'</h4><p>'+esc(langText(row,'analysis'))+'</p><h4>'+T.findings+'</h4><p>'+esc(langText(row,'findings'))+'</p><h4>'+T.lessons+'</h4><p>'+esc(langText(row,'lessons'))+'</p></div></div>';
-    overlay.classList.add('open'); document.getElementById('modalClose').addEventListener('click',function(){overlay.classList.remove('open');});
+    box.innerHTML='<button class="modal-close" id="modalClose" aria-label="'+T.close+'"><span class="menu-icon">×</span></button><div class="modal-kicker">'+esc(langText(row,'cat'))+'</div><h3 class="modal-title">'+esc(langText(row,'title'))+'</h3><div class="case-visuals">'+panels.join('')+'</div>'+(files.length?'<div class="case-files">'+files.join('')+'</div>':'')+'<div class="modal-content-grid"><div class="modal-copy"><h4>'+T.overview+'</h4><p>'+esc(langText(row,'overview'))+'</p><h4>'+T.problem+'</h4><p>'+esc(langText(row,'problem'))+'</p><h4>'+T.objective+'</h4><p>'+esc(langText(row,'objective'))+'</p><h4>'+T.data+'</h4><p>'+esc(langText(row,'data'))+'</p></div><div class="modal-copy"><h4>'+T.analysis+'</h4><p>'+esc(langText(row,'analysis'))+'</p><h4>'+T.findings+'</h4><p>'+esc(langText(row,'findings'))+'</p><h4>'+T.lessons+'</h4><p>'+esc(langText(row,'lessons'))+'</p></div></div>';
+    overlay.classList.add('open'); document.getElementById('modalClose').addEventListener('click',function(){overlay.classList.remove('open');}); document.querySelectorAll('[data-lightbox]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var lb=document.getElementById('cmsLightbox');lb.querySelector('img').src=a.getAttribute('data-lightbox');lb.classList.add('open');});});
   }
   async function getRows(endpoint){var r=await fetch(endpoint,{cache:'no-store'});if(!r.ok)throw Error('load failed');return await r.json();}
   async function loadCms(){
@@ -1616,6 +1637,7 @@ document.addEventListener('DOMContentLoaded', function(){
   var oldApplyLang=window.applyLang;if(typeof oldApplyLang==='function'){window.applyLang=function(lang){oldApplyLang(lang);setTimeout(loadCms,0);};}
   document.addEventListener('click',function(e){if(e.target.id==='modalOverlay')document.getElementById('modalOverlay').classList.remove('open');});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'){var o=document.getElementById('modalOverlay');if(o)o.classList.remove('open');}});
+  if(!document.getElementById('cmsLightbox')){var lb=document.createElement('div');lb.id='cmsLightbox';lb.className='lightbox';lb.innerHTML='<button class="lightbox-close" aria-label="Close">×</button><img alt="Preview">';document.body.appendChild(lb);lb.addEventListener('click',function(e){if(e.target===lb||e.target.classList.contains('lightbox-close'))lb.classList.remove('open');});}
 })();
 </script>
 
