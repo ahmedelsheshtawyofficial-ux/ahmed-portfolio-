@@ -107,4 +107,37 @@ async function settingsApi(request,env){ const isAdmin=await validCookie(request
 
 async function api(request,env){ const url=new URL(request.url); if(url.pathname==='/api/login'&&request.method==='POST'){let b;try{b=await request.json()}catch{return json({error:'بيانات غير صالحة'},400)}if(!env.ADMIN_USERNAME||!env.ADMIN_PASSWORD)return json({error:'بيانات دخول الأدمن غير مكتملة في Cloudflare'},500);if(b.username!==env.ADMIN_USERNAME||b.password!==env.ADMIN_PASSWORD)return json({error:'اسم المستخدم أو كلمة المرور غير صحيحة'},401);if(!env.ADMIN_SECRET)return json({error:'ADMIN_SECRET غير مضبوط في Cloudflare'},500);const c=await makeCookie(env.ADMIN_SECRET);return new Response(JSON.stringify({ok:true}),{headers:{'content-type':'application/json','set-cookie':setCookie(c)}});} if(url.pathname==='/api/logout'&&request.method==='POST')return new Response(JSON.stringify({ok:true}),{headers:{'content-type':'application/json','set-cookie':clearCookie()}}); if(url.pathname==='/api/me'&&request.method==='GET')return json({authenticated:await validCookie(request,env.ADMIN_SECRET)}); await ensureTables(env); if(url.pathname==='/api/tools')return toolsApi(request,env); if(url.pathname==='/api/settings')return settingsApi(request,env); if(request.method==='GET'&&/^\/api\/projects\/[^/]+$/.test(url.pathname)){const slug=decodeURIComponent(url.pathname.split('/').pop()||''); const isAdmin=await validCookie(request,env.ADMIN_SECRET); const row=await env.DB.prepare(isAdmin?'SELECT * FROM projects WHERE slug=?':'SELECT * FROM projects WHERE slug=? AND published=1').bind(slug).first(); return row?json(row):json({error:'Project Not Found'},404);} const map={'/api/projects':'projects','/api/videos':'videos','/api/skills':'skills','/api/certifications':'certs','/api/services':'services','/api/approach':'approach','/api/navigation':'navigation','/api/sections':'sections'}; if(map[url.pathname])return collectionApi(request,env,map[url.pathname]); if(url.pathname==='/api/posts'){const isAdmin=await validCookie(request,env.ADMIN_SECRET);if(request.method==='GET'){const q=isAdmin?'SELECT * FROM posts ORDER BY sort_order ASC,id ASC':'SELECT * FROM posts WHERE published=1 ORDER BY sort_order ASC,id ASC';const {results}=await env.DB.prepare(q).all();return json(results||[])}if(!isAdmin)return json({error:'غير مصرح'},401);if(request.method==='POST'){let body;try{body=await request.json()}catch{return json({error:'JSON غير صالح'},400)}const d=clean(body,POST_FIELDS);if(!d.slug||!d.title_en)return json({error:'Slug و Title EN مطلوبان'},400);try{const r=await env.DB.prepare(`INSERT INTO posts (${Object.keys(d).join(',')}) VALUES (${Object.keys(d).map(()=>'?').join(',')})`).bind(...Object.values(d)).run();return json({id:r.meta.last_row_id,...d},201)}catch(e){return json({error:String(e.message||e)},400)}}if(request.method==='PUT'){let body;try{body=await request.json()}catch{return json({error:'JSON غير صالح'},400)}const id=Number(body.id);if(!id)return json({error:'ID مطلوب'},400);const d=clean(body,POST_FIELDS);delete d.id;if(!Object.keys(d).length)return json({error:'لا توجد تغييرات'},400);try{const r=await env.DB.prepare(`UPDATE posts SET ${Object.keys(d).map(k=>`${k}=?`).join(',')} WHERE id=?`).bind(...Object.values(d),id).run();return json({ok:!!r.meta.changes})}catch(e){return json({error:String(e.message||e)},400)}}if(request.method==='DELETE'){const id=Number(url.searchParams.get('id'));if(!id)return json({error:'ID مطلوب'},400);const r=await env.DB.prepare('DELETE FROM posts WHERE id=?').bind(id).run();return json({ok:!!r.meta.changes})}} return json({error:'Not Found'},404); }
 
-export default {async fetch(request,env){const url=new URL(request.url);if(url.pathname.startsWith('/api/'))return api(request,env);if(request.method==='GET'&&/^\/project\/[^/]+\/?$/.test(url.pathname)){const indexUrl=new URL('/index.html',url);return env.ASSETS.fetch(new Request(indexUrl,request));}return env.ASSETS.fetch(request);}};
+function htmlEsc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function absoluteAssetUrl(value,origin){
+  const v=String(value||'').trim();
+  if(!v) return '';
+  try{return new URL(v,origin+'/').href;}catch{return '';}
+}
+
+async function projectPage(request,env,url){
+  const slug=decodeURIComponent(url.pathname.split('/').filter(Boolean).pop()||'');
+  if(!slug) return env.ASSETS.fetch(new Request(new URL('/index.html',url),request));
+  let row;
+  try{ row=await env.DB.prepare('SELECT * FROM projects WHERE slug=? AND published=1').bind(slug).first(); }
+  catch(e){ try{ await ensureTables(env); row=await env.DB.prepare('SELECT * FROM projects WHERE slug=? AND published=1').bind(slug).first(); }catch(_){} }
+  if(!row) return new Response('Project Not Found',{status:404,headers:{'content-type':'text/plain;charset=utf-8','cache-control':'no-store'}});
+
+  const indexUrl=new URL('/index.html',url);
+  const assetResponse=await env.ASSETS.fetch(new Request(indexUrl,request));
+  let html=await assetResponse.text();
+  const title=String(row.title_en||row.title_ar||'Project');
+  const description=String(row.desc_en||row.desc_ar||'Financial analysis and modeling project by Ahmed Elsheshtawy.');
+  const canonical=url.origin+'/project/'+encodeURIComponent(slug);
+  const candidates=[row.model_url,row.dashboard_url,row.model_images,row.dashboard_images];
+  let image='';
+  for(const c of candidates){
+    const first=String(c||'').split(/\r?\n|,/)[0].trim();
+    if(/\.(png|jpe?g|webp|gif|svg)(?:[?#].*)?$/i.test(first)){image=absoluteAssetUrl(first,url.origin);if(image)break;}
+  }
+  if(!image) image=url.origin+'/assets/profile.png';
+  const meta=`\n<title>${htmlEsc(title)} — Ahmed Elsheshtawy</title>\n<meta name="description" content="${htmlEsc(description)}">\n<link rel="canonical" href="${htmlEsc(canonical)}">\n<meta property="og:type" content="website">\n<meta property="og:site_name" content="Ahmed Elsheshtawy — Financial Analyst">\n<meta property="og:title" content="${htmlEsc(title)}">\n<meta property="og:description" content="${htmlEsc(description)}">\n<meta property="og:url" content="${htmlEsc(canonical)}">\n<meta property="og:image" content="${htmlEsc(image)}">\n<meta property="og:image:alt" content="${htmlEsc(title)}">\n<meta name="twitter:card" content="summary_large_image">\n<meta name="twitter:title" content="${htmlEsc(title)}">\n<meta name="twitter:description" content="${htmlEsc(description)}">\n<meta name="twitter:image" content="${htmlEsc(image)}">`;
+  html=html.replace(/<title>.*?<\/title>/i,meta);
+  return new Response(html,{status:200,headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store'}});
+}
+
+export default {async fetch(request,env){const url=new URL(request.url);if(url.pathname.startsWith('/api/'))return api(request,env);if(request.method==='GET'&&/^\/project\/[^/]+\/?$/.test(url.pathname))return projectPage(request,env,url);return env.ASSETS.fetch(request);}};
