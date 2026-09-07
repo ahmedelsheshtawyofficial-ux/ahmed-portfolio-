@@ -1804,3 +1804,68 @@ document.addEventListener('DOMContentLoaded', function(){
 })();
 </script>
 </html>
+<style>
+/* Calm portrait refinement — image only */
+.portrait-stage{
+  width:min(500px,100%);
+  height:560px;
+  transform:none;
+  margin:0 auto;
+}
+.portrait-frame::before{
+  width:430px;
+  height:430px;
+  top:9%;
+  background:transparent;
+  border:1px solid rgba(255,77,0,.22);
+  box-shadow:0 0 28px rgba(255,77,0,.08);
+}
+.portrait-frame::after{
+  width:462px;
+  height:462px;
+  top:6.2%;
+  border:1px solid rgba(255,77,0,.16);
+  box-shadow:none;
+}
+.portrait-image{
+  width:410px;
+  height:410px;
+  left:50%;
+  top:9.7%;
+  right:auto;
+  bottom:auto;
+  inset:auto;
+  transform:translateX(-50%);
+  object-fit:cover;
+  object-position:center;
+  border-radius:50%;
+  filter:none;
+  z-index:2;
+}
+.float-card{
+  box-shadow:0 10px 26px rgba(0,0,0,.22);
+  backdrop-filter:blur(8px);
+  opacity:.9;
+}
+.fc-1{top:22%;left:0;}
+.fc-2{top:48%;right:0;}
+@media(max-width:1000px){
+  .portrait-stage{height:620px;}
+}
+@media(max-width:800px){
+  .portrait-stage{height:470px;width:100%;margin-top:0;}
+  .portrait-frame::before{width:350px;height:350px;top:6%;}
+  .portrait-frame::after{width:378px;height:378px;top:3.7%;}
+  .portrait-image{width:334px;height:334px;top:6.7%;}
+  .fc-1{top:22%;left:2%;}
+  .fc-2{top:45%;right:2%;}
+}
+@media(max-width:560px){
+  .portrait-stage{height:380px;}
+  .portrait-frame::before{width:285px;height:285px;top:4%;}
+  .portrait-frame::after{width:307px;height:307px;top:2.4%;}
+  .portrait-image{width:272px;height:272px;top:4.8%;}
+  .fc-1{top:18%;}
+  .fc-2{top:42%;}
+}
+</style>
