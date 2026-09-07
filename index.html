@@ -680,6 +680,19 @@ footer p{color:#777!important;}
 .asset-frame iframe{width:100%;height:100%;min-height:330px;border:0;background:#fff;display:block;}
 .asset-open{position:absolute;right:12px;bottom:12px;background:#f4f2ec;color:#111;border:1px solid #333;border-radius:999px;padding:7px 11px;font:500 9px var(--mono);text-decoration:none;z-index:3;}
 .media-type-badge{font:500 9px var(--mono);letter-spacing:.06em;color:#8e9491;text-transform:uppercase;}
+.project-components{margin:0 0 34px;}
+.project-components-section{margin:0 0 24px;}
+.project-components-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px;font-size:18px;font-weight:800;}
+.project-components-title span:last-child{font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.6;}
+.project-components-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
+.project-component-card{display:block;border:1px solid rgba(0,0,0,.1);border-radius:14px;overflow:hidden;background:#fff;text-decoration:none;color:inherit;}
+.project-component-preview{aspect-ratio:16/9;background:#f2f0ea;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.project-component-preview img{width:100%;height:100%;object-fit:cover;display:block;}
+.project-component-empty{font-size:12px;opacity:.45;padding:20px;text-align:center;}
+.project-component-name{padding:13px 14px;font-size:15px;font-weight:750;}
+.project-component-name small{display:block;margin-top:3px;font-size:11px;font-weight:500;opacity:.5;}
+@media(max-width:900px){.project-components-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:560px){.project-components-grid{grid-template-columns:1fr;}}
 .case-files{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0 0 34px;}
 .file-card{display:flex;align-items:center;gap:14px;background:#101010;color:#fff;border:1px solid #292929;border-radius:16px;padding:15px 17px;text-decoration:none;transition:transform .2s ease,border-color .2s ease,background .2s ease;}
 .file-card:hover{transform:translateY(-2px);border-color:var(--accent);background:#151515;}
@@ -1597,6 +1610,9 @@ document.addEventListener('DOMContentLoaded', function(){
     function isImageUrl(u){return /\.(?:png|jpe?g|gif|webp|svg|avif)(?:[?#].*)?$/i.test(String(u||''));}
     function fileName(u){try{return decodeURIComponent(new URL(u,location.href).pathname.split('/').pop()||'File');}catch{return String(u||'').split('/').pop()||'File';}}
     function fileType(u){var n=fileName(u).toLowerCase(); if(/\.xlsx?$/.test(n))return 'Excel'; if(/\.pdf$/.test(n))return 'PDF'; if(/\.pptx?$/.test(n))return 'PowerPoint'; if(/\.docx?$/.test(n))return 'Word'; if(/\.(zip|rar|7z)$/.test(n))return 'Archive'; return 'File';}
+    function parseProjectParts(v){try{var a=JSON.parse(v||'[]');return Array.isArray(a)?a.filter(function(x){return x&&((x.name_en||'').trim()||(x.name_ar||'').trim());}):[];}catch(e){return[];}}
+    function componentCard(x){var name=ar?(x.name_ar||x.name_en):(x.name_en||x.name_ar);var alt=(ar?(x.name_en||''):(x.name_ar||''));var img=String(x.image_url||'').trim();return '<div class="project-component-card"><div class="project-component-preview">'+(img?'<img src="'+esc(img)+'" alt="'+esc(name)+'" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'">':'')+'<span class="project-component-empty" style="'+(img?'display:none':'')+'">'+(ar?'لا توجد صورة معاينة':'No preview image')+'</span></div><div class="project-component-name">'+esc(name)+(alt?'<small>'+esc(alt)+'</small>':'')+'</div></div>';}
+    function componentsSection(title,parts,label){if(!parts.length)return '';return '<div class="project-components-section"><div class="project-components-title"><span>'+esc(title)+'</span><span>'+label+'</span></div><div class="project-components-grid">'+parts.map(componentCard).join('')+'</div></div>';}
     function mediaFrame(title,url,kind,index){
       var u=String(url||'').trim();
       var label=kind==='model'?'MODEL':'DASHBOARD';
@@ -1613,6 +1629,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var modelLegacy=mediaUrls(row.model_url,row.model_gallery), dashLegacy=mediaUrls(row.dashboard_url,row.dashboard_gallery);
     var modelImages=mediaUrls('',row.model_images), dashImages=mediaUrls('',row.dashboard_images);
     var modelFiles=mediaUrls('',row.model_files), dashFiles=mediaUrls('',row.dashboard_files);
+    var modelParts=parseProjectParts(row.model_parts), dashParts=parseProjectParts(row.dashboard_parts);
     var panels=[], files=[];
     modelLegacy.forEach(function(u){if(isImageUrl(u)) modelImages.push(u); else modelFiles.push(u);});
     dashLegacy.forEach(function(u){if(isImageUrl(u)) dashImages.push(u); else dashFiles.push(u);});
@@ -1624,7 +1641,7 @@ document.addEventListener('DOMContentLoaded', function(){
     dashFiles.forEach(function(u,n){files.push(fileCard(T.dash,u,'dash',n));});
     if(!modelImages.length && !modelFiles.length)panels.push(fallbackPanel(T.model,'model'));
     if(!dashImages.length && !dashFiles.length)panels.push(fallbackPanel(T.dash,'dash'));
-    box.innerHTML='<button class="modal-close" id="modalClose" aria-label="'+T.close+'"><span class="menu-icon">×</span></button><div class="modal-kicker">'+esc(langText(row,'cat'))+'</div><h3 class="modal-title">'+esc(langText(row,'title'))+'</h3><div class="case-visuals">'+panels.join('')+'</div>'+(files.length?'<div class="case-files">'+files.join('')+'</div>':'')+'<div class="modal-content-grid"><div class="modal-copy"><h4>'+T.overview+'</h4><p>'+esc(langText(row,'overview'))+'</p><h4>'+T.problem+'</h4><p>'+esc(langText(row,'problem'))+'</p><h4>'+T.objective+'</h4><p>'+esc(langText(row,'objective'))+'</p><h4>'+T.data+'</h4><p>'+esc(langText(row,'data'))+'</p></div><div class="modal-copy"><h4>'+T.analysis+'</h4><p>'+esc(langText(row,'analysis'))+'</p><h4>'+T.findings+'</h4><p>'+esc(langText(row,'findings'))+'</p><h4>'+T.lessons+'</h4><p>'+esc(langText(row,'lessons'))+'</p></div></div>';
+    box.innerHTML='<button class="modal-close" id="modalClose" aria-label="'+T.close+'"><span class="menu-icon">×</span></button><div class="modal-kicker">'+esc(langText(row,'cat'))+'</div><h3 class="modal-title">'+esc(langText(row,'title'))+'</h3><div class="case-visuals">'+panels.join('')+'</div>'+(files.length?'<div class="case-files">'+files.join('')+'</div>':'')+((modelParts.length||dashParts.length)?'<div class="project-components">'+componentsSection(T.model,modelParts,ar?'أجزاء النموذج':'MODEL COMPONENTS')+componentsSection(T.dash,dashParts,ar?'أجزاء لوحة التحليل':'DASHBOARD COMPONENTS')+'</div>':'')+'<div class="modal-content-grid"><div class="modal-copy"><h4>'+T.overview+'</h4><p>'+esc(langText(row,'overview'))+'</p><h4>'+T.problem+'</h4><p>'+esc(langText(row,'problem'))+'</p><h4>'+T.objective+'</h4><p>'+esc(langText(row,'objective'))+'</p><h4>'+T.data+'</h4><p>'+esc(langText(row,'data'))+'</p></div><div class="modal-copy"><h4>'+T.analysis+'</h4><p>'+esc(langText(row,'analysis'))+'</p><h4>'+T.findings+'</h4><p>'+esc(langText(row,'findings'))+'</p><h4>'+T.lessons+'</h4><p>'+esc(langText(row,'lessons'))+'</p></div></div>';
     overlay.classList.add('open'); document.getElementById('modalClose').addEventListener('click',function(){overlay.classList.remove('open');}); document.querySelectorAll('[data-lightbox]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var lb=document.getElementById('cmsLightbox');lb.querySelector('img').src=a.getAttribute('data-lightbox');lb.classList.add('open');});});
   }
   async function getRows(endpoint){var r=await fetch(endpoint,{cache:'no-store'});if(!r.ok)throw Error('load failed');return await r.json();}
