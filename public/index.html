@@ -1622,8 +1622,8 @@ document.addEventListener('DOMContentLoaded', function(){
     dashImages.forEach(function(u,n){panels.push(mediaFrame(T.dash,u,'dash',n));});
     modelFiles.forEach(function(u,n){files.push(fileCard(T.model,u,'model',n));});
     dashFiles.forEach(function(u,n){files.push(fileCard(T.dash,u,'dash',n));});
-    if(!model.length)panels.push(fallbackPanel(T.model,'model'));
-    if(!dash.length)panels.push(fallbackPanel(T.dash,'dash'));
+    if(!modelImages.length && !modelFiles.length)panels.push(fallbackPanel(T.model,'model'));
+    if(!dashImages.length && !dashFiles.length)panels.push(fallbackPanel(T.dash,'dash'));
     box.innerHTML='<button class="modal-close" id="modalClose" aria-label="'+T.close+'"><span class="menu-icon">×</span></button><div class="modal-kicker">'+esc(langText(row,'cat'))+'</div><h3 class="modal-title">'+esc(langText(row,'title'))+'</h3><div class="case-visuals">'+panels.join('')+'</div>'+(files.length?'<div class="case-files">'+files.join('')+'</div>':'')+'<div class="modal-content-grid"><div class="modal-copy"><h4>'+T.overview+'</h4><p>'+esc(langText(row,'overview'))+'</p><h4>'+T.problem+'</h4><p>'+esc(langText(row,'problem'))+'</p><h4>'+T.objective+'</h4><p>'+esc(langText(row,'objective'))+'</p><h4>'+T.data+'</h4><p>'+esc(langText(row,'data'))+'</p></div><div class="modal-copy"><h4>'+T.analysis+'</h4><p>'+esc(langText(row,'analysis'))+'</p><h4>'+T.findings+'</h4><p>'+esc(langText(row,'findings'))+'</p><h4>'+T.lessons+'</h4><p>'+esc(langText(row,'lessons'))+'</p></div></div>';
     overlay.classList.add('open'); document.getElementById('modalClose').addEventListener('click',function(){overlay.classList.remove('open');}); document.querySelectorAll('[data-lightbox]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var lb=document.getElementById('cmsLightbox');lb.querySelector('img').src=a.getAttribute('data-lightbox');lb.classList.add('open');});});
   }
