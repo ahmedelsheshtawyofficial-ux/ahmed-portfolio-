@@ -256,7 +256,10 @@ nav{display:flex; align-items:center; justify-content:space-between;}
 .project-body p{color:var(--ink-soft); font-size:15px; margin-bottom:20px;}
 .tag-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px;}
 .tag{font-size:12px; color:var(--ink-soft); border:1px solid var(--line); padding:6px 12px; border-radius:100px;}
-.project-link{display:inline-flex; align-items:center; gap:8px; font-weight:600; font-size:14.5px;}
+.project-link{display:inline-flex; align-items:center; gap:8px; font-weight:600; font-size:14.5px; color:var(--ink); text-decoration:none;}
+.project-link:hover{color:var(--accent);}
+.cert-card.featured .project-link{color:#fff;}
+.cert-card.featured .project-link:hover{color:var(--accent);}
 /* CMS-rendered content */
 .projects-cms-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;width:100%;}
 .video-grid-inner{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;width:100%;grid-column:1/-1;}
@@ -352,6 +355,10 @@ nav{display:flex; align-items:center; justify-content:space-between;}
 .brand-statement{text-align:center; padding:130px 0;}
 .brand-statement h2{font-size:clamp(30px,5vw,50px); line-height:1.2; max-width:760px; margin:0 auto 24px;}
 .brand-statement p{color:var(--ink-soft); font-size:17px; max-width:520px; margin:0 auto;}
+.brand-watermark{position:absolute;right:-4%;bottom:-14%;width:min(58vw,760px);max-height:78%;object-fit:contain;object-position:center;opacity:.10;pointer-events:none;user-select:none;filter:none;}
+.brand-statement > .wrap{position:relative;z-index:2;}
+.brand-statement > .brand-watermark{z-index:1;}
+[data-theme="dark"] .brand-watermark{opacity:.11;}
 
 /* ============ CONTACT ============ */
 .contact-card{
@@ -548,8 +555,8 @@ section{padding:120px 0;}
 .project-body h3{color:#fff;font-size:clamp(28px,3.2vw,44px);line-height:.98;letter-spacing:-.05em;}
 .project-body p{color:rgba(255,255,255,.56);}
 .tag{color:rgba(255,255,255,.65);border-color:rgba(255,255,255,.16);}
-.project-link{color:#fff;}
-.project-link svg{stroke:var(--accent);}
+[data-theme="dark"] .project-link{color:#fff;}
+[data-theme="dark"] .project-link svg{stroke:var(--accent);}
 .mock-sheet{max-width:520px;width:88%;background:#101010;border-color:#303030;box-shadow:0 25px 55px rgba(0,0,0,.4);transform:rotate(-3deg);}
 .mock-sheet .row{border-color:#292929;color:#9b9b9b;}
 .mock-sheet .cell{border-color:#292929;}
@@ -1147,6 +1154,7 @@ html[dir="rtl"] .util-toggles{margin-left:0; margin-right:8px;}
 
 <!-- BRAND STATEMENT -->
 <section class="brand-statement" data-cms-section="brand">
+  <img class="brand-watermark" data-cms-brand-watermark src="/assets/logo-header.png" alt="" aria-hidden="true">
   <div class="wrap">
     <h2 class="reveal" data-i18n="brandstatement.heading">Numbers tell a story. I analyze it.</h2>
     <p class="reveal" data-i18n="brandstatement.sub">Finance is more than calculations. Behind every number is a business decision, an operational driver, or a story waiting to be understood.</p>
@@ -1698,6 +1706,11 @@ document.addEventListener('DOMContentLoaded', function(){
           test.src=logo;
         }
       });
+    });
+    document.querySelectorAll('[data-cms-brand-watermark]').forEach(function(el){
+      var src=getSetting('site.brand_logo_url')||'/assets/logo-header.png';
+      el.src=src;
+      el.style.display=src?'block':'none';
     });
     var cta=document.querySelector('[data-cms-insights-cta]');if(cta){var cu=getSetting('insights.cta_url');var cv=getSetting('insights.cta_visible')!=='0';cta.href=cu||'#';cta.style.display=cv&&cu?'inline-flex':'none';}
   }
