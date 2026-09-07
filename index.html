@@ -499,11 +499,14 @@ header.scrolled{background:rgba(5,5,5,.88);backdrop-filter:blur(18px);box-shadow
 [data-theme="dark"] .btn-secondary{border-color:rgba(255,255,255,.35);color:#fff;background:transparent;}
 [data-theme="dark"] .btn-secondary:hover{border-color:var(--accent);color:#fff;background:rgba(255,77,0,.08);}
 .hero-grid > .portrait-stage{grid-column:2;grid-row:1;}
+/* Portrait treatment — updated to match the supplied 5555 reference. */
 .portrait-stage{max-width:none;width:min(620px,100%);height:760px;aspect-ratio:auto;margin:0 auto;position:relative;transform:translateY(58px);}
-.portrait-frame{border:0;background:transparent;border-radius:0;overflow:visible;}
-.portrait-image{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:contrast(1.03);}
-.portrait-frame::after{content:"";position:absolute;inset:8% 5% 0 5%;background:radial-gradient(circle at 50% 46%,rgba(255,77,0,.08),transparent 48%);pointer-events:none;z-index:-1;}
+.portrait-frame{border:0;background:transparent;border-radius:0;overflow:visible;position:absolute;inset:0;z-index:0;}
+.portrait-frame::before{content:"";position:absolute;width:560px;height:560px;left:50%;top:8%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle at 50% 46%,#ff5a0a 0%,#ff4d00 58%,#df3f00 100%);border:2px solid rgba(255,77,0,.9);box-shadow:0 0 0 1px rgba(255,77,0,.2),0 0 45px rgba(255,77,0,.18),0 28px 70px rgba(0,0,0,.45);z-index:0;}
+.portrait-frame::after{content:"";position:absolute;width:610px;height:610px;left:50%;top:5%;transform:translateX(-50%);border:1px solid rgba(255,77,0,.42);border-radius:50%;box-shadow:0 0 0 14px rgba(255,77,0,.06),0 0 0 42px rgba(255,255,255,.035),0 0 55px rgba(255,77,0,.12);pointer-events:none;z-index:0;}
+.portrait-image{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:contrast(1.03);z-index:1;}
 .portrait-placeholder{display:none;}
+
 .float-card{background:rgba(5,5,5,.78);color:#fff;border:1px solid rgba(255,77,0,.65);box-shadow:0 16px 40px rgba(0,0,0,.3);backdrop-filter:blur(12px);border-radius:11px;padding:12px 15px;z-index:8;}
 .float-card::after{content:"";position:absolute;right:8px;bottom:6px;width:7px;height:7px;background:var(--accent);border-radius:1px;box-shadow:0 0 18px rgba(255,77,0,.9);}
 .float-card b{color:#fff;font-size:13px;}
