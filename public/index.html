@@ -1672,8 +1672,21 @@ document.addEventListener('DOMContentLoaded', function(){
     dashFiles.forEach(function(u,n){files.push(fileCard(T.dash,u,'dash',n));});
     if(!panels.length && !modelFiles.length)panels.push(fallbackPanel(T.model,'model'));
     if(!panels.length && !dashFiles.length)panels.push(fallbackPanel(T.dash,'dash'));
-    box.innerHTML='<button class="modal-close" id="modalClose" aria-label="'+T.close+'"><span class="menu-icon">×</span></button><div class="modal-kicker">'+esc(langText(row,'cat'))+'</div><h3 class="modal-title">'+esc(langText(row,'title'))+'</h3><a class="project-share" href="'+esc(projectPath)+'" data-project-share target="_blank" rel="noopener">↗ '+(ar?'رابط المشروع':'Project link')+'</a><div class="case-visuals">'+panels.join('')+'</div>'+(files.length?'<div class="case-files">'+files.join('')+'</div>':'')+'<div class="modal-content-grid"><div class="modal-copy"><h4>'+T.overview+'</h4><p>'+esc(langText(row,'overview'))+'</p><h4>'+T.problem+'</h4><p>'+esc(langText(row,'problem'))+'</p><h4>'+T.objective+'</h4><p>'+esc(langText(row,'objective'))+'</p><h4>'+T.data+'</h4><p>'+esc(langText(row,'data'))+'</p></div><div class="modal-copy"><h4>'+T.analysis+'</h4><p>'+esc(langText(row,'analysis'))+'</p><h4>'+T.findings+'</h4><p>'+esc(langText(row,'findings'))+'</p><h4>'+T.lessons+'</h4><p>'+esc(langText(row,'lessons'))+'</p></div></div>';
-    overlay.classList.add('open'); document.getElementById('modalClose').addEventListener('click',function(){overlay.classList.remove('open'); if(location.pathname.indexOf('/project/')===0) history.pushState({},'', '/');});
+    box.innerHTML='<button class="modal-close" id="modalClose" aria-label="'+T.close+'"><span class="menu-icon">×</span></button><div class="modal-kicker">'+esc(langText(row,'cat'))+'</div><h3 class="modal-title">'+esc(langText(row,'title'))+'</h3><button type="button" class="project-share" data-project-share>⧉ '+(ar?'نسخ رابط المشروع':'Copy project link')+'</button><div class="case-visuals">'+panels.join('')+'</div>'+(files.length?'<div class="case-files">'+files.join('')+'</div>':'')+'<div class="modal-content-grid"><div class="modal-copy"><h4>'+T.overview+'</h4><p>'+esc(langText(row,'overview'))+'</p><h4>'+T.problem+'</h4><p>'+esc(langText(row,'problem'))+'</p><h4>'+T.objective+'</h4><p>'+esc(langText(row,'objective'))+'</p><h4>'+T.data+'</h4><p>'+esc(langText(row,'data'))+'</p></div><div class="modal-copy"><h4>'+T.analysis+'</h4><p>'+esc(langText(row,'analysis'))+'</p><h4>'+T.findings+'</h4><p>'+esc(langText(row,'findings'))+'</p><h4>'+T.lessons+'</h4><p>'+esc(langText(row,'lessons'))+'</p></div></div>';
+    overlay.classList.add('open');
+    document.getElementById('modalClose').addEventListener('click',function(){overlay.classList.remove('open'); if(location.pathname.indexOf('/project/')===0) history.pushState({},'', '/');});
+    var shareBtn=document.querySelector('[data-project-share]');
+    if(shareBtn) shareBtn.addEventListener('click',async function(){
+      var shareUrl=location.origin+projectPath;
+      try{
+        await navigator.clipboard.writeText(shareUrl);
+      }catch(err){
+        var ta=document.createElement('textarea'); ta.value=shareUrl; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+      }
+      var oldText=shareBtn.textContent;
+      shareBtn.textContent=ar?'✓ تم نسخ الرابط':'✓ Link copied';
+      setTimeout(function(){shareBtn.textContent=oldText;},1800);
+    });
   }
   async function getRows(endpoint){var r=await fetch(endpoint,{cache:'no-store'});if(!r.ok)throw Error('load failed');return await r.json();}
   function projectSlugFromUrl(){var m=location.pathname.match(/^\/project\/([^/]+)\/?$/);return m?decodeURIComponent(m[1]):'';}
