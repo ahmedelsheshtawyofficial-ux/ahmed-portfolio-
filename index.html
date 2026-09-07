@@ -209,10 +209,13 @@ nav{display:flex; align-items:center; justify-content:space-between;}
 #work .projects-cms-grid .project-body{padding:30px;background:#0b0b0b;}
 #work .projects-cms-grid .project-body h3{font-size:clamp(25px,2.5vw,34px);}
 #work .projects-cms-grid .project-body p{max-width:560px;}
-#insights .insights-grid-inner{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;}
-#insights .insight-card{min-height:250px;height:auto;}
+#insights .insights-grid{display:block;}
+#insights .insights-grid-inner{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;width:100%;}
+#insights .insight-card{min-height:250px;height:auto;min-width:0;overflow:hidden;}
+#insights .insight-card h3,#insights .insight-card p{overflow-wrap:anywhere;word-break:normal;}
+#insights .insight-meta{gap:12px;flex-wrap:wrap;}
 @media(max-width:900px){#work .projects-cms-grid{grid-template-columns:1fr 1fr;}#insights .insights-grid-inner{grid-template-columns:1fr 1fr;}}
-@media(max-width:650px){#work .projects-cms-grid{grid-template-columns:1fr;}#insights .insights-grid-inner{grid-template-columns:1fr;}}
+@media(max-width:650px){#work .projects-cms-grid{grid-template-columns:1fr;}#insights .insights-grid-inner{grid-template-columns:1fr;gap:12px;}#insights .insight-card{padding:22px;min-height:0;}#insights .insight-card h3{font-size:19px;line-height:1.35;}#insights .insight-card p{font-size:13.5px;line-height:1.65;}#insights .insight-meta{font-size:12px;align-items:flex-start;}}
 
 /* ============ WHAT I DO ============ */
 .services-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:var(--radius-md); overflow:hidden;}
@@ -1605,9 +1608,9 @@ document.addEventListener('DOMContentLoaded', function(){
   function lang(row,key){return currentLang==='ar'?(row[key+'_ar']||row[key+'_en']||''):(row[key+'_en']||row[key+'_ar']||'');}
   function getSetting(key){var x=cms.settings[key];return x?(currentLang==='ar'?(x.ar||x.en||''):(x.en||x.ar||'')):'';}
   async function get(url){var r=await fetch(url,{cache:'no-store'});if(!r.ok)throw Error('CMS load failed');return r.json();}
+  var baseApplyLang = window.applyLang;
   function applySettings(){
     Object.keys(cms.settings).forEach(function(k){if(window.translations&&window.translations[k]){window.translations[k].en=cms.settings[k].en;window.translations[k].ar=cms.settings[k].ar;}});
-    if(typeof window.applyLang==='function')window.applyLang(currentLang);
     var portrait=getSetting('site.portrait_url'); if(portrait){document.querySelectorAll('[data-cms-portrait]').forEach(function(img){img.src=portrait;});}
     ['email','linkedin','whatsapp','facebook'].forEach(function(k){var u=getSetting('contact.'+k);var visible=getSetting('social.'+k+'.visible')!=='0';document.querySelectorAll('[data-cms-contact="'+k+'"], [data-cms-social="'+k+'"]').forEach(function(a){a.href=k==='email'?(u.indexOf('mailto:')===0?u:'mailto:'+u):u;a.style.display=visible&&u?'':'none';});});
     var fav=getSetting('site.favicon_url');if(fav){var link=document.querySelector('link[rel="icon"]')||document.createElement('link');link.rel='icon';link.href=fav;if(!link.parentNode)document.head.appendChild(link);}
@@ -1615,7 +1618,21 @@ document.addEventListener('DOMContentLoaded', function(){
     var desc=getSetting('site.meta_description');if(desc){var md=document.querySelector('meta[name="description"]')||document.createElement('meta');md.name='description';md.content=desc;if(!md.parentNode)document.head.appendChild(md);}
     var accent=getSetting('site.accent_color');if(accent)document.documentElement.style.setProperty('--accent',accent);
     document.documentElement.classList.toggle('effects-off',getSetting('site.effects_enabled')==='0');
-    ['brand','loader'].forEach(function(kind){var text=getSetting('site.'+(kind==='brand'?'brand_mark':'loader_mark'))||'AE';var logo=getSetting('site.'+(kind==='brand'?'brand_logo_url':'loader_logo_url'));var local=kind==='brand'?'/assets/logo-header.png':'/assets/logo-loader.png';document.querySelectorAll(kind==='brand'?'[data-cms-brand-mark]':'[data-cms-loader-mark]').forEach(function(el){function show(src){el.innerHTML='<img src="'+esc(src)+'" alt="" loading="eager" decoding="async" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;">';el.style.background='transparent';}show(local);if(logo&&logo!==local){var test=new Image();var timer=setTimeout(function(){},1200);test.onload=function(){clearTimeout(timer);show(logo);};test.onerror=function(){clearTimeout(timer);};test.src=logo;}});});});
+    ['brand','loader'].forEach(function(kind){
+      var text=getSetting('site.'+(kind==='brand'?'brand_mark':'loader_mark'))||'AE';
+      var logo=getSetting('site.'+(kind==='brand'?'brand_logo_url':'loader_logo_url'));
+      var local=kind==='brand'?'/assets/logo-header.png':'/assets/logo-loader.png';
+      document.querySelectorAll(kind==='brand'?'[data-cms-brand-mark]':'[data-cms-loader-mark]').forEach(function(el){
+        function show(src){el.innerHTML='<img src="'+esc(src)+'" alt="" loading="eager" decoding="async" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;">';el.style.background='transparent';}
+        show(local);
+        if(logo&&logo!==local){
+          var test=new Image();
+          test.onload=function(){show(logo);};
+          test.onerror=function(){};
+          test.src=logo;
+        }
+      });
+    });
     var cta=document.querySelector('[data-cms-insights-cta]');if(cta){var cu=getSetting('insights.cta_url');var cv=getSetting('insights.cta_visible')!=='0';cta.href=cu||'#';cta.style.display=cv&&cu?'inline-flex':'none';}
   }
   function renderServices(){var c=document.getElementById('servicesContainer');if(!c)return;c.innerHTML=cms.services.map(function(r,i){return '<div class="service-card"><div class="service-num">'+String(i+1).padStart(2,'0')+'</div><div class="service-content"><h3>'+esc(lang(r,'title'))+'</h3><p>'+esc(lang(r,'desc'))+'</p></div><div class="service-arrow"><span class="icon-arrow">↗</span></div></div>';}).join('');}
@@ -1623,11 +1640,36 @@ document.addEventListener('DOMContentLoaded', function(){
   function renderSkills(){var c=document.getElementById('skillsContainer');if(!c)return;c.innerHTML=cms.skills.map(function(r){return '<div class="tool-chip"><span class="dot"></span>'+esc(lang(r,'name'))+'</div>';}).join('');}
   function renderCerts(){var c=document.getElementById('certsContainer');if(!c)return;c.innerHTML=cms.certs.map(function(r){var done=String(r.status_en||'').toLowerCase().indexOf('completed')>=0;var featured=Number(r.featured)===1;var status=esc(lang(r,'status'));var name=esc(lang(r,'name'));return '<div class="cert-card '+(featured?'featured ':'')+(done?'done':'')+'" data-watermark="'+name+'"><span class="cert-status '+(done?'done':'dev')+'">'+status+'</span><h3>'+name+(r.score?' <span class="cert-score">'+esc(r.score)+'</span>':'')+'</h3><p>'+esc(lang(r,'desc'))+'</p>'+(r.provider?'<small>'+esc(r.provider)+'</small>':'')+(r.credential_url?'<a class="project-link" href="'+esc(r.credential_url)+'" target="_blank" rel="noopener">Credential ↗</a>':'')+'</div>';}).join('');}
   function renderNav(){document.querySelectorAll('[data-cms-nav]').forEach(function(a){var slug=a.getAttribute('data-cms-nav');var r=cms.navigation.find(function(x){return x.slug===slug;});if(r){a.textContent=lang(r,'label');a.href=r.href;if(r.target)a.target=r.target;}});}
-  async function load(){try{var rs=await Promise.all([get('/api/settings'),get('/api/services'),get('/api/approach'),get('/api/skills'),get('/api/certifications'),get('/api/navigation')]);cms.settings={};rs[0].forEach(function(x){cms.settings[x.key]={en:x.en,ar:x.ar};});cms.services=rs[1];cms.approach=rs[2];cms.skills=rs[3];cms.certs=rs[4];cms.navigation=rs[5];applySettings();renderServices();renderApproach();renderSkills();renderCerts();renderNav();if(window.refreshCms)window.refreshCms();}catch(e){console.warn(e);}}
+  var FALLBACK_SERVICES=[
+    {title_en:'Financial Analysis',title_ar:'التحليل المالي',desc_en:'Analyzing revenue, expenses, profitability, margins, KPIs and financial performance.',desc_ar:'تحليل الإيرادات والمصروفات والربحية والهوامش ومؤشرات الأداء الرئيسية والأداء المالي العام.'},
+    {title_en:'Financial Modeling',title_ar:'النمذجة المالية',desc_en:'Building structured financial models to understand historical performance, forecast results and evaluate business scenarios.',desc_ar:'بناء نماذج مالية منظمة لفهم الأداء التاريخي، والتنبؤ بالنتائج، وتقييم سيناريوهات الأعمال المختلفة.'},
+    {title_en:'FP&A',title_ar:'التخطيط والتحليل المالي',desc_en:'Developing skills in planning, budgeting, forecasting and performance analysis.',desc_ar:'تطوير مهاراتي في التخطيط والموازنات والتنبؤ وتحليل الأداء.'},
+    {title_en:'Business Analysis',title_ar:'تحليل الأعمال',desc_en:'Connecting financial results with the operational drivers behind business performance.',desc_ar:'ربط النتائج المالية بالمحركات التشغيلية وراء أداء الأعمال.'}
+  ];
+  var FALLBACK_CERTS=[
+    {name_en:'FMVA®',name_ar:'FMVA®',status_en:'Completed',status_ar:'مكتملة',desc_en:'Financial Modeling & Valuation Analyst',desc_ar:'محلل النمذجة والتقييم المالي',score:'95%',provider:'CFI',featured:1},
+    {name_en:'FPAP',name_ar:'FPAP',status_en:'Currently developing',status_ar:'قيد التطوير حاليًا',desc_en:'Financial Planning & Analysis Professional',desc_ar:'أخصائي التخطيط والتحليل المالي',provider:'CFI',featured:0},
+    {name_en:'PMP Diploma',name_ar:'دبلومة PMP',status_en:'30 hours',status_ar:'30 ساعة',desc_en:'Start & Planning',desc_ar:'البدء والتخطيط',featured:0}
+  ];
+  async function load(){
+    var endpoints=[get('/api/settings'),get('/api/services'),get('/api/approach'),get('/api/skills'),get('/api/certifications'),get('/api/navigation')];
+    var rs=await Promise.all(endpoints.map(function(p){return p.catch(function(e){console.warn(e);return null;});}));
+    cms.settings={};
+    if(Array.isArray(rs[0])) rs[0].forEach(function(x){cms.settings[x.key]={en:x.en,ar:x.ar};});
+    cms.services=Array.isArray(rs[1])&&rs[1].length?rs[1]:FALLBACK_SERVICES;
+    cms.approach=Array.isArray(rs[2])?rs[2]:[];
+    cms.skills=Array.isArray(rs[3])?rs[3]:[];
+    cms.certs=Array.isArray(rs[4])&&rs[4].length?rs[4]:FALLBACK_CERTS;
+    cms.navigation=Array.isArray(rs[5])?rs[5]:[];
+    applySettings();
+    if(typeof baseApplyLang==='function') baseApplyLang(currentLang);
+    renderServices();renderApproach();renderSkills();renderCerts();renderNav();
+    if(window.refreshCms)window.refreshCms();
+  }
   // Mark navigation anchors and refresh their labels without disturbing existing menu structure.
   document.querySelectorAll('#site-header .nav-links a[href^="#"], #mobileMenu a[href^="#"]').forEach(function(a){var h=a.getAttribute('href');var slug=h?h.slice(1):'';if(['home','about','work','videos','skills','insights','contact'].indexOf(slug)>=0)a.setAttribute('data-cms-nav',slug);});
   document.addEventListener('DOMContentLoaded',load);
-  var old=window.applyLang;if(typeof old==='function'){window.applyLang=function(l){old(l);setTimeout(function(){applySettings();renderServices();renderApproach();renderSkills();renderCerts();renderNav();},0);};}
+  if(typeof baseApplyLang==='function'){window.applyLang=function(l){baseApplyLang(l);setTimeout(function(){renderServices();renderApproach();renderSkills();renderCerts();renderNav();if(window.refreshCms)window.refreshCms();},0);};}
 })();
 </script>
 </html>
