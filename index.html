@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ahmed Elsheshtawy — Financial Analyst</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preload" as="image" href="/assets/logo-header.png"><link rel="preload" as="image" href="/assets/logo-loader.png">
+
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -1613,7 +1615,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var desc=getSetting('site.meta_description');if(desc){var md=document.querySelector('meta[name="description"]')||document.createElement('meta');md.name='description';md.content=desc;if(!md.parentNode)document.head.appendChild(md);}
     var accent=getSetting('site.accent_color');if(accent)document.documentElement.style.setProperty('--accent',accent);
     document.documentElement.classList.toggle('effects-off',getSetting('site.effects_enabled')==='0');
-    ['brand','loader'].forEach(function(kind){var text=getSetting('site.'+(kind==='brand'?'brand_mark':'loader_mark'))||'AE';var logo=getSetting('site.'+(kind==='brand'?'brand_logo_url':'loader_logo_url')) || (kind==='brand'?'/assets/logo-header.png':'/assets/logo-loader.png');document.querySelectorAll(kind==='brand'?'[data-cms-brand-mark]':'[data-cms-loader-mark]').forEach(function(el){if(logo){el.innerHTML='<img src="'+esc(logo)+'" alt="" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;">';el.style.background='transparent';}else{el.textContent=text;el.style.background='';}});});
+    ['brand','loader'].forEach(function(kind){var text=getSetting('site.'+(kind==='brand'?'brand_mark':'loader_mark'))||'AE';var logo=getSetting('site.'+(kind==='brand'?'brand_logo_url':'loader_logo_url'));var local=kind==='brand'?'/assets/logo-header.png':'/assets/logo-loader.png';document.querySelectorAll(kind==='brand'?'[data-cms-brand-mark]':'[data-cms-loader-mark]').forEach(function(el){function show(src){el.innerHTML='<img src="'+esc(src)+'" alt="" loading="eager" decoding="async" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;">';el.style.background='transparent';}show(local);if(logo&&logo!==local){var test=new Image();var timer=setTimeout(function(){},1200);test.onload=function(){clearTimeout(timer);show(logo);};test.onerror=function(){clearTimeout(timer);};test.src=logo;}});});});
     var cta=document.querySelector('[data-cms-insights-cta]');if(cta){var cu=getSetting('insights.cta_url');var cv=getSetting('insights.cta_visible')!=='0';cta.href=cu||'#';cta.style.display=cv&&cu?'inline-flex':'none';}
   }
   function renderServices(){var c=document.getElementById('servicesContainer');if(!c)return;c.innerHTML=cms.services.map(function(r,i){return '<div class="service-card"><div class="service-num">'+String(i+1).padStart(2,'0')+'</div><div class="service-content"><h3>'+esc(lang(r,'title'))+'</h3><p>'+esc(lang(r,'desc'))+'</p></div><div class="service-arrow"><span class="icon-arrow">↗</span></div></div>';}).join('');}
