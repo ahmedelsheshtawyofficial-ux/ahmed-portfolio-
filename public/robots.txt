@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+Sitemap: https://ahmed-portfolio.ahmedelsheshtawyofficial.workers.dev/sitemap.xml
