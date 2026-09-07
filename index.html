@@ -911,6 +911,19 @@ html[dir="rtl"] .util-toggles{margin-left:0; margin-right:8px;}
 @media(max-width:900px){.cms-managed-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media(max-width:900px){.cms-managed-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.cms-skills-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media(max-width:650px){.cms-managed-grid{grid-template-columns:1fr;}.cms-skills-grid{grid-template-columns:1fr 1fr;}}
+
+/* CMS custom sections + reorder support */
+.cms-custom-section{position:relative;overflow:hidden;}
+.cms-custom-section.cms-bg-surface{background:var(--surface);}
+.cms-custom-section.cms-bg-dark{background:#111;color:#fff;}
+.cms-custom-section.cms-bg-dark .section-head p,.cms-custom-section.cms-bg-dark .cms-custom-content{color:rgba(255,255,255,.72);}
+.cms-custom-section.cms-bg-accent{background:var(--accent);color:#fff;}
+.cms-custom-section.cms-bg-accent .section-head p{color:rgba(255,255,255,.82);}
+.cms-custom-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,420px);gap:48px;align-items:center;}
+.cms-custom-content{color:var(--ink-soft);font-size:17px;line-height:1.9;white-space:normal;}
+.cms-custom-image{width:100%;max-height:460px;object-fit:cover;border-radius:24px;border:1px solid var(--line);display:block;}
+.cms-custom-cta{margin-top:28px;display:inline-flex;}
+@media(max-width:768px){.cms-custom-grid{grid-template-columns:1fr;gap:28px;}.cms-custom-image{max-height:320px;}.cms-custom-content{font-size:16px;}}
 </style>
 </head>
 <body>
@@ -1107,7 +1120,7 @@ html[dir="rtl"] .util-toggles{margin-left:0; margin-right:8px;}
 </section>
 
 <!-- BRAND STATEMENT -->
-<section class="brand-statement">
+<section class="brand-statement" data-cms-section="brand">
   <div class="wrap">
     <h2 class="reveal" data-i18n="brandstatement.heading">Numbers tell a story. I analyze it.</h2>
     <p class="reveal" data-i18n="brandstatement.sub">Finance is more than calculations. Behind every number is a business decision, an operational driver, or a story waiting to be understood.</p>
@@ -1609,7 +1622,7 @@ document.addEventListener('DOMContentLoaded', function(){
 <script>
 /* Full website CMS layer. Existing design, effects and base translations remain intact. */
 (function(){
-  var cms={settings:{},services:[],approach:[],skills:[],certs:[],navigation:[]};
+  var cms={settings:{},services:[],approach:[],skills:[],certs:[],navigation:[],sections:[]};
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];});}
   function lang(row,key){return currentLang==='ar'?(row[key+'_ar']||row[key+'_en']||''):(row[key+'_en']||row[key+'_ar']||'');}
   function getSetting(key){var x=cms.settings[key];return x?(currentLang==='ar'?(x.ar||x.en||''):(x.en||x.ar||'')):'';}
@@ -1645,6 +1658,35 @@ document.addEventListener('DOMContentLoaded', function(){
   function renderApproach(){var c=document.getElementById('approachContainer');if(!c)return;c.innerHTML=cms.approach.map(function(r,i){return '<div class="approach-item"><span class="approach-num">'+String(i+1).padStart(2,'0')+'</span><div><h3>'+esc(lang(r,'title'))+'</h3><p>'+esc(lang(r,'desc'))+'</p></div></div>';}).join('');}
   function renderSkills(){var c=document.getElementById('skillsContainer');if(!c)return;c.innerHTML=cms.skills.map(function(r){return '<div class="tool-chip"><span class="dot"></span>'+esc(lang(r,'name'))+'</div>';}).join('');}
   function renderCerts(){var c=document.getElementById('certsContainer');if(!c)return;c.innerHTML=cms.certs.map(function(r){var done=String(r.status_en||'').toLowerCase().indexOf('completed')>=0;var featured=Number(r.featured)===1;var status=esc(lang(r,'status'));var name=esc(lang(r,'name'));return '<div class="cert-card '+(featured?'featured ':'')+(done?'done':'')+'" data-watermark="'+name+'"><span class="cert-status '+(done?'done':'dev')+'">'+status+'</span><h3>'+name+(r.score?' <span class="cert-score">'+esc(r.score)+'</span>':'')+'</h3><p>'+esc(lang(r,'desc'))+'</p>'+(r.provider?'<small>'+esc(r.provider)+'</small>':'')+(r.credential_url?'<a class="project-link" href="'+esc(r.credential_url)+'" target="_blank" rel="noopener">Credential ↗</a>':'')+'</div>';}).join('');}
+  var BUILTIN_SECTION_ORDER=['home','about','what-i-do','work','videos','approach','skills','certs','insights','brand','contact'];
+  function sectionKey(el){return el.getAttribute('data-cms-section')||el.id||'';}
+  function renderCustomSections(){
+    document.querySelectorAll('section.cms-custom-section').forEach(function(el){el.remove();});
+    var footer=document.querySelector('body > footer');
+    cms.sections.filter(function(r){return Number(r.published)!==0;}).forEach(function(r){
+      var sec=document.createElement('section');
+      sec.className='cms-custom-section'+(r.background==='surface'?' cms-bg-surface':r.background==='dark'?' cms-bg-dark':r.background==='accent'?' cms-bg-accent':'');
+      sec.setAttribute('data-cms-section',r.slug);
+      var label=esc(lang(r,'label'));
+      var title=esc(lang(r,'title'));
+      var desc=esc(lang(r,'desc'));
+      var content=esc(lang(r,'content')).replace(/\r?\n/g,'<br>');
+      var ctaLabel=esc(lang(r,'cta_label'));
+      var html='<div class="wrap"><div class="section-head">'+(label?'<p class="eyebrow">'+label+'</p>':'')+(title?'<h2>'+title+'</h2>':'')+(desc?'<p>'+desc+'</p>':'')+'</div><div class="cms-custom-grid">'+(content?'<div class="cms-custom-content">'+content+(r.cta_url&&ctaLabel?'<br><a class="btn-secondary cms-custom-cta" href="'+esc(r.cta_url)+'" target="_blank" rel="noopener">'+ctaLabel+' ↗</a>':'')+'</div>':'')+(r.image_url?'<div><img class="cms-custom-image" src="'+esc(r.image_url)+'" alt=""></div>':'')+'</div></div>';
+      sec.innerHTML=html;
+      if(footer)document.body.insertBefore(sec,footer);else document.body.appendChild(sec);
+    });
+  }
+  function applySectionOrder(){
+    var saved=getSetting('site.section_order');
+    var order=[];
+    try{var parsed=JSON.parse(saved||'');if(Array.isArray(parsed))order=parsed.filter(Boolean);}catch(e){}
+    if(!order.length)order=BUILTIN_SECTION_ORDER.slice();
+    cms.sections.forEach(function(r){if(order.indexOf(r.slug)<0)order.push(r.slug);});
+    var seen={};order=order.filter(function(k){if(seen[k])return false;seen[k]=1;return true;});
+    var footer=document.querySelector('body > footer');
+    order.forEach(function(k){var el=document.querySelector('body > section[data-cms-section="'+CSS.escape(k)+'"], body > section#'+CSS.escape(k));if(el&&footer)document.body.insertBefore(el,footer);});
+  }
   function renderNav(){document.querySelectorAll('[data-cms-nav]').forEach(function(a){var slug=a.getAttribute('data-cms-nav');var r=cms.navigation.find(function(x){return x.slug===slug;});if(r){a.textContent=lang(r,'label');a.href=r.href;if(r.target)a.target=r.target;}});}
   var FALLBACK_SERVICES=[
     {title_en:'Financial Analysis',title_ar:'التحليل المالي',desc_en:'Analyzing revenue, expenses, profitability, margins, KPIs and financial performance.',desc_ar:'تحليل الإيرادات والمصروفات والربحية والهوامش ومؤشرات الأداء الرئيسية والأداء المالي العام.'},
@@ -1658,7 +1700,7 @@ document.addEventListener('DOMContentLoaded', function(){
     {name_en:'PMP Diploma',name_ar:'دبلومة PMP',status_en:'30 hours',status_ar:'30 ساعة',desc_en:'Start & Planning',desc_ar:'البدء والتخطيط',featured:0}
   ];
   async function load(){
-    var endpoints=[get('/api/settings'),get('/api/services'),get('/api/approach'),get('/api/skills'),get('/api/certifications'),get('/api/navigation')];
+    var endpoints=[get('/api/settings'),get('/api/services'),get('/api/approach'),get('/api/skills'),get('/api/certifications'),get('/api/navigation'),get('/api/sections')];
     var rs=await Promise.all(endpoints.map(function(p){return p.catch(function(e){console.warn(e);return null;});}));
     cms.settings={};
     if(Array.isArray(rs[0])) rs[0].forEach(function(x){cms.settings[x.key]={en:x.en,ar:x.ar};});
@@ -1667,15 +1709,16 @@ document.addEventListener('DOMContentLoaded', function(){
     cms.skills=Array.isArray(rs[3])?rs[3]:[];
     cms.certs=Array.isArray(rs[4])&&rs[4].length?rs[4]:FALLBACK_CERTS;
     cms.navigation=Array.isArray(rs[5])?rs[5]:[];
+    cms.sections=Array.isArray(rs[6])?rs[6]:[];
     applySettings();
     if(typeof baseApplyLang==='function') baseApplyLang(currentLang);
-    renderServices();renderApproach();renderSkills();renderCerts();renderNav();
+    renderServices();renderApproach();renderSkills();renderCerts();renderCustomSections();renderNav();applySectionOrder();
     if(window.refreshCms)window.refreshCms();
   }
   // Mark navigation anchors and refresh their labels without disturbing existing menu structure.
   document.querySelectorAll('#site-header .nav-links a[href^="#"], #mobileMenu a[href^="#"]').forEach(function(a){var h=a.getAttribute('href');var slug=h?h.slice(1):'';if(['home','about','work','videos','skills','insights','contact'].indexOf(slug)>=0)a.setAttribute('data-cms-nav',slug);});
   document.addEventListener('DOMContentLoaded',load);
-  if(typeof baseApplyLang==='function'){window.applyLang=function(l){baseApplyLang(l);setTimeout(function(){renderServices();renderApproach();renderSkills();renderCerts();renderNav();if(window.refreshCms)window.refreshCms();},0);};}
+  if(typeof baseApplyLang==='function'){window.applyLang=function(l){baseApplyLang(l);setTimeout(function(){renderServices();renderApproach();renderSkills();renderCerts();renderCustomSections();renderNav();applySectionOrder();if(window.refreshCms)window.refreshCms();},0);};}
 })();
 </script>
 </html>
