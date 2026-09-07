@@ -3,7 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ahmed Elsheshtawy — Financial Analyst</title>
+<title id="pageTitle">Ahmed Elsheshtawy — Financial Analyst</title>
+<meta name="description" id="pageDescription" content="Ahmed Elsheshtawy — Financial Analyst, Financial Modeler and FP&amp;A professional.">
+<link rel="canonical" id="canonicalLink" href="https://ahmed-portfolio.pages.dev/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Ahmed Elsheshtawy">
+<meta property="og:title" id="ogTitle" content="Ahmed Elsheshtawy — Financial Analyst">
+<meta property="og:description" id="ogDescription" content="Ahmed Elsheshtawy — Financial Analyst, Financial Modeler and FP&amp;A professional.">
+<meta property="og:image" id="ogImage" content="https://ahmed-portfolio.pages.dev/assets/profile.png">
+<meta property="og:url" id="ogUrl" content="https://ahmed-portfolio.pages.dev/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" id="twTitle" content="Ahmed Elsheshtawy — Financial Analyst">
+<meta name="twitter:description" id="twDescription" content="Ahmed Elsheshtawy — Financial Analyst, Financial Modeler and FP&amp;A professional.">
+<meta name="twitter:image" id="twImage" content="https://ahmed-portfolio.pages.dev/assets/profile.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preload" as="image" href="/assets/logo-header.png"><link rel="preload" as="image" href="/assets/logo-loader.png">
 
@@ -1616,8 +1628,66 @@ document.addEventListener('DOMContentLoaded', function(){
       return '<a class="video-card cms-video-link" href="'+esc(link)+'" target="_blank" rel="noopener"><div class="video-thumb '+thumbClass+'"'+img+'><span class="play-btn"><span class="icon-play">▶</span></span>'+(r.duration?'<span class="video-duration">'+esc(r.duration)+'</span>':'')+'</div><span class="video-cat">'+esc(langText(r,'category'))+'</span><h4>'+esc(langText(r,'title'))+'</h4><p>'+esc(langText(r,'desc'))+'</p></a>';
     }).join('');
   }
-  function openProject(row){
+  var defaultMeta={
+    title:document.getElementById('pageTitle')?document.getElementById('pageTitle').textContent:document.title,
+    desc:document.getElementById('pageDescription')?document.getElementById('pageDescription').getAttribute('content'):'',
+    ogImage:document.getElementById('ogImage')?document.getElementById('ogImage').getAttribute('content'):'',
+    canonical:document.getElementById('canonicalLink')?document.getElementById('canonicalLink').getAttribute('href'):location.origin+'/'
+  };
+  function projectPath(slug){return '/project/'+encodeURIComponent(slug);}
+  function absUrl(u){ if(!u)return ''; u=String(u).trim(); if(!u)return ''; if(/^https?:\/\//i.test(u))return u; return location.origin+(u.charAt(0)==='/'?u:'/'+u); }
+  function firstProjectImage(row){
+    var candidates=[];
+    function push(v){String(v||'').split(/\r?\n/).forEach(function(x){x=x.trim();if(x)candidates.push(x);});}
+    push(row.model_images);push(row.dashboard_images);push(row.model_gallery);push(row.dashboard_gallery);
+    if(row.model_url)candidates.push(row.model_url); if(row.dashboard_url)candidates.push(row.dashboard_url);
+    var img=candidates.find(function(u){return /\.(png|jpe?g|gif|webp|avif)(?:[?#].*)?$/i.test(u);});
+    return absUrl(img||'/assets/profile.png');
+  }
+  function setMeta(id,attr,val){var el=document.getElementById(id);if(el){if(attr==='text')el.textContent=val;else el.setAttribute(attr,val);}}
+  function applyProjectMeta(row){
+    var name=langText(row,'title'); var title=name?(name+' — Ahmed Elsheshtawy'):defaultMeta.title;
+    var desc=langText(row,'desc')||langText(row,'overview')||defaultMeta.desc;
+    var image=firstProjectImage(row);
+    var url=location.origin+projectPath(row.slug);
+    document.title=title;
+    setMeta('pageTitle','text',title);
+    setMeta('pageDescription','content',desc);
+    setMeta('ogTitle','content',title);
+    setMeta('ogDescription','content',desc);
+    setMeta('ogImage','content',image);
+    setMeta('ogUrl','content',url);
+    setMeta('twTitle','content',title);
+    setMeta('twDescription','content',desc);
+    setMeta('twImage','content',image);
+    setMeta('canonicalLink','href',url);
+  }
+  function resetMeta(){
+    document.title=defaultMeta.title;
+    setMeta('pageTitle','text',defaultMeta.title);
+    setMeta('pageDescription','content',defaultMeta.desc);
+    setMeta('ogTitle','content',defaultMeta.title);
+    setMeta('ogDescription','content',defaultMeta.desc);
+    setMeta('ogImage','content',defaultMeta.ogImage);
+    setMeta('ogUrl','content',defaultMeta.canonical);
+    setMeta('twTitle','content',defaultMeta.title);
+    setMeta('twDescription','content',defaultMeta.desc);
+    setMeta('twImage','content',defaultMeta.ogImage);
+    setMeta('canonicalLink','href',defaultMeta.canonical);
+  }
+  function closeModal(){
+    var overlay=document.getElementById('modalOverlay');
+    if(overlay)overlay.classList.remove('open');
+    if(location.pathname.indexOf('/project/')===0){
+      history.pushState({},'', '/');
+      resetMeta();
+    }
+  }
+  function openProject(row,opts){
     if(!row)return;
+    opts=opts||{};
+    if(opts.pushState!==false){ history.pushState({project:row.slug},'',projectPath(row.slug)); }
+    applyProjectMeta(row);
     var overlay=document.getElementById('modalOverlay'), box=document.getElementById('modalBox');
     var ar=currentLang==='ar';
     var T=ar?{model:'النموذج المالي',dash:'لوحة التحليل',overview:'نظرة عامة',problem:'مشكلة العمل',objective:'الهدف',data:'البيانات والافتراضات',analysis:'التحليل',findings:'أهم النتائج',lessons:'الدروس المستفادة',close:'إغلاق دراسة الحالة',open:'فتح الملف'}:{model:'Financial Model',dash:'Analysis Dashboard',overview:'Overview',problem:'Business Problem',objective:'Objective',data:'Data & Assumptions',analysis:'Analysis',findings:'Key Findings',lessons:'Lessons Learned',close:'Close case study',open:'Open file'};
@@ -1668,18 +1738,38 @@ document.addEventListener('DOMContentLoaded', function(){
     if(!panels.length && !modelFiles.length)panels.push(fallbackPanel(T.model,'model'));
     if(!panels.length && !dashFiles.length)panels.push(fallbackPanel(T.dash,'dash'));
     box.innerHTML='<button class="modal-close" id="modalClose" aria-label="'+T.close+'"><span class="menu-icon">×</span></button><div class="modal-kicker">'+esc(langText(row,'cat'))+'</div><h3 class="modal-title">'+esc(langText(row,'title'))+'</h3><div class="case-visuals">'+panels.join('')+'</div>'+(files.length?'<div class="case-files">'+files.join('')+'</div>':'')+'<div class="modal-content-grid"><div class="modal-copy"><h4>'+T.overview+'</h4><p>'+esc(langText(row,'overview'))+'</p><h4>'+T.problem+'</h4><p>'+esc(langText(row,'problem'))+'</p><h4>'+T.objective+'</h4><p>'+esc(langText(row,'objective'))+'</p><h4>'+T.data+'</h4><p>'+esc(langText(row,'data'))+'</p></div><div class="modal-copy"><h4>'+T.analysis+'</h4><p>'+esc(langText(row,'analysis'))+'</p><h4>'+T.findings+'</h4><p>'+esc(langText(row,'findings'))+'</p><h4>'+T.lessons+'</h4><p>'+esc(langText(row,'lessons'))+'</p></div></div>';
-    overlay.classList.add('open'); document.getElementById('modalClose').addEventListener('click',function(){overlay.classList.remove('open');});
+    overlay.classList.add('open'); document.getElementById('modalClose').addEventListener('click',closeModal);
   }
   async function getRows(endpoint){var r=await fetch(endpoint,{cache:'no-store'});if(!r.ok)throw Error('load failed');return await r.json();}
   async function loadCms(){
-    try{var results=await Promise.all([getRows('/api/projects'),getRows('/api/videos'),getRows('/api/posts')]);renderProjects(results[0]);renderVideos(results[1]);renderPosts(results[2]);}catch(e){console.warn(e);}
+    try{
+      var results=await Promise.all([getRows('/api/projects'),getRows('/api/videos'),getRows('/api/posts')]);
+      window.__cmsProjects=results[0];
+      renderProjects(results[0]);renderVideos(results[1]);renderPosts(results[2]);
+      var m=location.pathname.match(/^\/project\/([^\/]+)\/?$/);
+      if(m){
+        var slug=decodeURIComponent(m[1]);
+        var row=results[0].find(function(x){return x.slug===slug;});
+        if(row) openProject(row,{pushState:false});
+      }
+    }catch(e){console.warn(e);}
   }
+  window.addEventListener('popstate',function(){
+    var m=location.pathname.match(/^\/project\/([^\/]+)\/?$/);
+    if(m){
+      var slug=decodeURIComponent(m[1]);
+      var row=(window.__cmsProjects||[]).find(function(x){return x.slug===slug;});
+      if(row){ applyProjectMeta(row); var overlay=document.getElementById('modalOverlay'); if(overlay && !overlay.classList.contains('open')) openProject(row,{pushState:false}); return; }
+    }
+    var overlay=document.getElementById('modalOverlay'); if(overlay)overlay.classList.remove('open');
+    resetMeta();
+  });
   function renderPosts(rows){var c=document.getElementById('insightsContainer');if(!c)return;if(!rows.length){c.innerHTML='<div class="cms-empty">'+(currentLang==='ar'?'لا توجد منشورات منشورة حاليًا.':'No published posts yet.')+'</div>';return;}c.innerHTML=rows.map(function(r){return '<div class="insight-card"><span class="insight-cat">'+esc(langText(r,'cat'))+'</span><h3>'+esc(langText(r,'title'))+'</h3><p>'+esc(langText(r,'desc'))+'</p><div class="insight-meta"><span>'+esc(langText(r,'date'))+'</span><a href="'+esc(r.url||'#')+'" target="_blank" rel="noopener"><span>'+(currentLang==='ar'?'اقرأ المزيد':'Read More')+'</span> <span class="icon-arrow">↗</span></a></div></div>';}).join('');}
   window.refreshCms=loadCms;
   document.addEventListener('DOMContentLoaded',loadCms);
   var oldApplyLang=window.applyLang;if(typeof oldApplyLang==='function'){window.applyLang=function(lang){oldApplyLang(lang);setTimeout(loadCms,0);};}
-  document.addEventListener('click',function(e){if(e.target.id==='modalOverlay')document.getElementById('modalOverlay').classList.remove('open');});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape'){var o=document.getElementById('modalOverlay');if(o)o.classList.remove('open');}});
+  document.addEventListener('click',function(e){if(e.target.id==='modalOverlay')closeModal();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){var o=document.getElementById('modalOverlay');if(o&&o.classList.contains('open'))closeModal();}});
   if(!document.getElementById('cmsLightbox')){var lb=document.createElement('div');lb.id='cmsLightbox';lb.className='lightbox';lb.innerHTML='<button class="lightbox-close" aria-label="Close">×</button><img alt="Preview">';document.body.appendChild(lb);lb.addEventListener('click',function(e){if(e.target===lb||e.target.classList.contains('lightbox-close'))lb.classList.remove('open');});}
   document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('[data-lightbox]');if(a){e.preventDefault();e.stopPropagation();var lb=document.getElementById('cmsLightbox');if(lb){var im=lb.querySelector('img');im.src=a.getAttribute('data-lightbox')||'';im.alt=a.getAttribute('aria-label')||'Preview';lb.classList.add('open');}}});
 })();

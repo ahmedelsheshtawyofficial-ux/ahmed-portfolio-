@@ -105,6 +105,65 @@ async function toolsApi(request,env){
 
 async function settingsApi(request,env){ const isAdmin=await validCookie(request,env.ADMIN_SECRET); if(request.method==='GET'){const {results}=await env.DB.prepare('SELECT key,en,ar FROM site_settings ORDER BY key').all();return json(results||[]);} if(!isAdmin)return json({error:'غير مصرح'},401); if(request.method==='PUT'){let b;try{b=await request.json()}catch{return json({error:'JSON غير صالح'},400)} const items=Array.isArray(b)?b:(b.items||[]); if(!items.length)return json({error:'لا توجد تغييرات'},400); const stmts=[]; for(const x of items){if(!x.key)continue;stmts.push(env.DB.prepare('INSERT INTO site_settings (key,en,ar) VALUES (?,?,?) ON CONFLICT(key) DO UPDATE SET en=excluded.en,ar=excluded.ar').bind(String(x.key),String(x.en??''),String(x.ar??'')));} if(stmts.length)await env.DB.batch(stmts);return json({ok:true});} return json({error:'Method Not Allowed'},405); }
 
+function absUrl(u,origin){ if(!u)return ''; u=String(u).trim(); if(!u)return ''; if(/^https?:\/\//i.test(u))return u; return origin+(u.startsWith('/')?u:'/'+u); }
+function firstProjectImage(row,origin){
+  const candidates=[];
+  const push=(v)=>{ String(v||'').split(/\r?\n/).forEach(x=>{x=x.trim(); if(x)candidates.push(x);}); };
+  push(row.model_images); push(row.dashboard_images); push(row.model_gallery); push(row.dashboard_gallery);
+  if(row.model_url) candidates.push(row.model_url);
+  if(row.dashboard_url) candidates.push(row.dashboard_url);
+  const img=candidates.find(u=>/\.(png|jpe?g|gif|webp|avif)(?:[?#].*)?$/i.test(u));
+  return absUrl(img||'/assets/profile.png',origin);
+}
+async function renderPage(request,env,projectSlug){
+  const reqUrl=new URL(request.url);
+  const origin=reqUrl.origin;
+  const assetReq=new Request(new URL('/index.html',reqUrl).toString(),request);
+  const assetRes=await env.ASSETS.fetch(assetReq);
+  if(!assetRes.ok) return assetRes;
+  let title=null,desc=null,image=null,status=200;
+  const pageUrl=origin+reqUrl.pathname;
+  if(projectSlug){
+    await ensureTables(env);
+    const row=await env.DB.prepare('SELECT * FROM projects WHERE slug=? AND published=1').bind(projectSlug).first();
+    if(!row){
+      status=404;
+    } else {
+      const name=row.title_en||row.title_ar||'';
+      title=name?`${name} — Ahmed Elsheshtawy`:'Ahmed Elsheshtawy — Financial Analyst';
+      desc=row.desc_en||row.desc_ar||row.overview_en||row.overview_ar||'';
+      image=firstProjectImage(row,origin);
+    }
+  }
+  const rewriter=new HTMLRewriter()
+    .on('#canonicalLink',{element(el){el.setAttribute('href',pageUrl);}})
+    .on('#ogUrl',{element(el){el.setAttribute('content',pageUrl);}});
+  if(title){
+    rewriter.on('#pageTitle',{element(el){el.setInnerContent(title);}})
+      .on('#ogTitle',{element(el){el.setAttribute('content',title);}})
+      .on('#twTitle',{element(el){el.setAttribute('content',title);}});
+  }
+  if(desc){
+    rewriter.on('#pageDescription',{element(el){el.setAttribute('content',desc);}})
+      .on('#ogDescription',{element(el){el.setAttribute('content',desc);}})
+      .on('#twDescription',{element(el){el.setAttribute('content',desc);}});
+  }
+  if(image){
+    rewriter.on('#ogImage',{element(el){el.setAttribute('content',image);}})
+      .on('#twImage',{element(el){el.setAttribute('content',image);}});
+  }
+  const out=rewriter.transform(assetRes);
+  if(status===404) return new Response(out.body,{status:404,headers:out.headers});
+  return out;
+}
+
 async function api(request,env){ const url=new URL(request.url); if(url.pathname==='/api/login'&&request.method==='POST'){let b;try{b=await request.json()}catch{return json({error:'بيانات غير صالحة'},400)}if(!env.ADMIN_USERNAME||!env.ADMIN_PASSWORD)return json({error:'بيانات دخول الأدمن غير مكتملة في Cloudflare'},500);if(b.username!==env.ADMIN_USERNAME||b.password!==env.ADMIN_PASSWORD)return json({error:'اسم المستخدم أو كلمة المرور غير صحيحة'},401);if(!env.ADMIN_SECRET)return json({error:'ADMIN_SECRET غير مضبوط في Cloudflare'},500);const c=await makeCookie(env.ADMIN_SECRET);return new Response(JSON.stringify({ok:true}),{headers:{'content-type':'application/json','set-cookie':setCookie(c)}});} if(url.pathname==='/api/logout'&&request.method==='POST')return new Response(JSON.stringify({ok:true}),{headers:{'content-type':'application/json','set-cookie':clearCookie()}}); if(url.pathname==='/api/me'&&request.method==='GET')return json({authenticated:await validCookie(request,env.ADMIN_SECRET)}); await ensureTables(env); if(url.pathname==='/api/tools')return toolsApi(request,env); if(url.pathname==='/api/settings')return settingsApi(request,env); const map={'/api/projects':'projects','/api/videos':'videos','/api/skills':'skills','/api/certifications':'certs','/api/services':'services','/api/approach':'approach','/api/navigation':'navigation','/api/sections':'sections'}; if(map[url.pathname])return collectionApi(request,env,map[url.pathname]); if(url.pathname==='/api/posts'){const isAdmin=await validCookie(request,env.ADMIN_SECRET);if(request.method==='GET'){const q=isAdmin?'SELECT * FROM posts ORDER BY sort_order ASC,id ASC':'SELECT * FROM posts WHERE published=1 ORDER BY sort_order ASC,id ASC';const {results}=await env.DB.prepare(q).all();return json(results||[])}if(!isAdmin)return json({error:'غير مصرح'},401);if(request.method==='POST'){let body;try{body=await request.json()}catch{return json({error:'JSON غير صالح'},400)}const d=clean(body,POST_FIELDS);if(!d.slug||!d.title_en)return json({error:'Slug و Title EN مطلوبان'},400);try{const r=await env.DB.prepare(`INSERT INTO posts (${Object.keys(d).join(',')}) VALUES (${Object.keys(d).map(()=>'?').join(',')})`).bind(...Object.values(d)).run();return json({id:r.meta.last_row_id,...d},201)}catch(e){return json({error:String(e.message||e)},400)}}if(request.method==='PUT'){let body;try{body=await request.json()}catch{return json({error:'JSON غير صالح'},400)}const id=Number(body.id);if(!id)return json({error:'ID مطلوب'},400);const d=clean(body,POST_FIELDS);delete d.id;if(!Object.keys(d).length)return json({error:'لا توجد تغييرات'},400);try{const r=await env.DB.prepare(`UPDATE posts SET ${Object.keys(d).map(k=>`${k}=?`).join(',')} WHERE id=?`).bind(...Object.values(d),id).run();return json({ok:!!r.meta.changes})}catch(e){return json({error:String(e.message||e)},400)}}if(request.method==='DELETE'){const id=Number(url.searchParams.get('id'));if(!id)return json({error:'ID مطلوب'},400);const r=await env.DB.prepare('DELETE FROM posts WHERE id=?').bind(id).run();return json({ok:!!r.meta.changes})}} return json({error:'Not Found'},404); }
 
-export default {async fetch(request,env){const url=new URL(request.url);if(url.pathname.startsWith('/api/'))return api(request,env);return env.ASSETS.fetch(request);}};
+export default {async fetch(request,env){
+  const url=new URL(request.url);
+  if(url.pathname.startsWith('/api/'))return api(request,env);
+  const m=url.pathname.match(/^\/project\/([^\/]+)\/?$/);
+  if(m) return renderPage(request,env,decodeURIComponent(m[1]));
+  if(url.pathname==='/'||url.pathname==='/index.html') return renderPage(request,env,null);
+  return env.ASSETS.fetch(request);
+}};
