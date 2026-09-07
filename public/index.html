@@ -258,6 +258,12 @@ nav{display:flex; align-items:center; justify-content:space-between;}
 .tag{font-size:12px; color:var(--ink-soft); border:1px solid var(--line); padding:6px 12px; border-radius:100px;}
 .project-link{display:inline-flex; align-items:center; gap:8px; font-weight:600; font-size:14.5px; color:var(--ink); text-decoration:none;}
 .project-link:hover{color:var(--accent);}
+.cert-card{position:relative;overflow:hidden;}
+.cert-bg{position:absolute;inset:0;background-repeat:no-repeat;background-position:right bottom;background-size:min(58%,280px);opacity:.11;pointer-events:none;z-index:0;}
+.cert-card > *:not(.cert-bg){position:relative;z-index:1;}
+.cert-card .project-link{margin-top:14px;color:#111;display:inline-flex;}
+.cert-card .project-link:hover{color:var(--accent);}
+.cert-card.featured .cert-bg{opacity:.16;}
 .cert-card.featured .project-link{color:#fff;}
 .cert-card.featured .project-link:hover{color:var(--accent);}
 /* CMS-rendered content */
@@ -629,6 +635,10 @@ section{padding:120px 0;}
 .cert-card.featured.done{border-color:#0b0b0b;}
 .cert-status.done{background:var(--accent);color:#050505;}
 .cert-status.dev{background:var(--accent-soft);color:var(--accent-dark);}
+
+/* Light-mode visibility fixes for secondary / LinkedIn CTA */
+.btn-secondary{border-color:#d4d0c6;color:#111;background:transparent;}
+.btn-secondary:hover{border-color:#111;background:#fff;color:#111;}
 
 /* Insights */
 #insights{background:#e9e6dd!important;}
@@ -1717,7 +1727,7 @@ document.addEventListener('DOMContentLoaded', function(){
   function renderServices(){var c=document.getElementById('servicesContainer');if(!c)return;c.innerHTML=cms.services.map(function(r,i){return '<div class="service-card"><div class="service-num">'+String(i+1).padStart(2,'0')+'</div><div class="service-content"><h3>'+esc(lang(r,'title'))+'</h3><p>'+esc(lang(r,'desc'))+'</p></div><div class="service-arrow"><span class="icon-arrow">↗</span></div></div>';}).join('');}
   function renderApproach(){var c=document.getElementById('approachContainer');if(!c)return;c.innerHTML=cms.approach.map(function(r,i){return '<div class="approach-item"><span class="approach-num">'+String(i+1).padStart(2,'0')+'</span><div><h3>'+esc(lang(r,'title'))+'</h3><p>'+esc(lang(r,'desc'))+'</p></div></div>';}).join('');}
   function renderSkills(){var c=document.getElementById('skillsContainer');if(!c)return;c.innerHTML=cms.skills.map(function(r){return '<div class="tool-chip"><span class="dot"></span>'+esc(lang(r,'name'))+'</div>';}).join('');}
-  function renderCerts(){var c=document.getElementById('certsContainer');if(!c)return;c.innerHTML=cms.certs.map(function(r){var done=String(r.status_en||'').toLowerCase().indexOf('completed')>=0;var featured=Number(r.featured)===1;var status=esc(lang(r,'status'));var name=esc(lang(r,'name'));return '<div class="cert-card '+(featured?'featured ':'')+(done?'done':'')+'" data-watermark="'+name+'"><span class="cert-status '+(done?'done':'dev')+'">'+status+'</span><h3>'+name+(r.score?' <span class="cert-score">'+esc(r.score)+'</span>':'')+'</h3><p>'+esc(lang(r,'desc'))+'</p>'+(r.provider?'<small>'+esc(r.provider)+'</small>':'')+(r.credential_url?'<a class="project-link" href="'+esc(r.credential_url)+'" target="_blank" rel="noopener">Credential ↗</a>':'')+'</div>';}).join('');}
+  function renderCerts(){var c=document.getElementById('certsContainer');if(!c)return;c.innerHTML=cms.certs.map(function(r){var done=String(r.status_en||'').toLowerCase().indexOf('completed')>=0;var featured=Number(r.featured)===1;var status=esc(lang(r,'status'));var name=esc(lang(r,'name'));var bg=r.logo_url?'<span class="cert-bg" aria-hidden="true" style="background-image:url(\''+esc(r.logo_url)+"\')"></span>":'';return '<div class="cert-card '+(featured?'featured ':'')+(done?'done':'')+'" data-watermark="'+name+'">'+bg+'<span class="cert-status '+(done?'done':'dev')+'">'+status+'</span><h3>'+name+(r.score?' <span class="cert-score">'+esc(r.score)+'</span>':'')+'</h3><p>'+esc(lang(r,'desc'))+'</p>'+(r.provider?'<small>'+esc(r.provider)+'</small>':'')+(r.credential_url?'<a class="project-link" href="'+esc(r.credential_url)+'" target="_blank" rel="noopener">Credential ↗</a>':'')+'</div>';}).join('');}
   var BUILTIN_SECTION_ORDER=['home','about','what-i-do','work','videos','approach','skills','certs','insights','brand','contact'];
   function sectionKey(el){return el.getAttribute('data-cms-section')||el.id||'';}
   function renderCustomSections(){
