@@ -687,7 +687,7 @@ footer p{color:#777!important;}
 .project-components-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
 .project-component-card{display:block;border:1px solid rgba(0,0,0,.1);border-radius:14px;overflow:hidden;background:#fff;text-decoration:none;color:inherit;}
 .project-component-preview{aspect-ratio:16/9;background:#f2f0ea;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-.project-component-preview img{width:100%;height:100%;object-fit:cover;display:block;}
+.project-component-preview img{width:100%;height:100%;object-fit:cover;display:block;}.project-component-preview .component-image-link{display:block;width:100%;height:100%;cursor:zoom-in;}.project-component-preview .component-image-link img{width:100%;height:100%;object-fit:cover;display:block;}
 .project-component-empty{font-size:12px;opacity:.45;padding:20px;text-align:center;}
 .project-component-name{padding:13px 14px;font-size:15px;font-weight:750;}
 .project-component-name small{display:block;margin-top:3px;font-size:11px;font-weight:500;opacity:.5;}
@@ -1611,8 +1611,15 @@ document.addEventListener('DOMContentLoaded', function(){
     function fileName(u){try{return decodeURIComponent(new URL(u,location.href).pathname.split('/').pop()||'File');}catch{return String(u||'').split('/').pop()||'File';}}
     function fileType(u){var n=fileName(u).toLowerCase(); if(/\.xlsx?$/.test(n))return 'Excel'; if(/\.pdf$/.test(n))return 'PDF'; if(/\.pptx?$/.test(n))return 'PowerPoint'; if(/\.docx?$/.test(n))return 'Word'; if(/\.(zip|rar|7z)$/.test(n))return 'Archive'; return 'File';}
     function parseProjectParts(v){try{var a=JSON.parse(v||'[]');return Array.isArray(a)?a.filter(function(x){return x&&((x.name_en||'').trim()||(x.name_ar||'').trim());}):[];}catch(e){return[];}}
-    function componentCard(x){var name=ar?(x.name_ar||x.name_en):(x.name_en||x.name_ar);var alt=(ar?(x.name_en||''):(x.name_ar||''));var img=String(x.image_url||'').trim();return '<div class="project-component-card"><div class="project-component-preview">'+(img?'<img src="'+esc(img)+'" alt="'+esc(name)+'" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'">':'')+'<span class="project-component-empty" style="'+(img?'display:none':'')+'">'+(ar?'لا توجد صورة معاينة':'No preview image')+'</span></div><div class="project-component-name">'+esc(name)+(alt?'<small>'+esc(alt)+'</small>':'')+'</div></div>';}
-    function componentsSection(title,parts,label){if(!parts.length)return '';return '<div class="project-components-section"><div class="project-components-title"><span>'+esc(title)+'</span><span>'+label+'</span></div><div class="project-components-grid">'+parts.map(componentCard).join('')+'</div></div>';}
+    function componentPanel(x,kind,index){
+      var name=ar?(x.name_ar||x.name_en):(x.name_en||x.name_ar);
+      var img=String(x.image_url||'').trim();
+      var section=kind==='model'?T.model:T.dash;
+      var preview=img
+        ? '<a class=\"image-preview-link component-image-link\" href=\"#\" data-lightbox=\"'+esc(img)+'\" aria-label=\"'+esc(name)+'\"><img src=\"'+esc(img)+'\" alt=\"'+esc(name)+'\" loading=\"lazy\"></a>'
+        : '<div class=\"asset-fallback\"><span class=\"fallback-label\">'+(ar?'لا توجد صورة معاينة':'No preview image')+'</span></div>';
+      return '<div class=\"case-panel project-component-panel\"><div class=\"case-panel-head\"><span>'+esc(section)+'</span><span>'+esc(name)+'</span></div><div class=\"asset-frame\">'+preview+'</div></div>';
+    }
     function mediaFrame(title,url,kind,index){
       var u=String(url||'').trim();
       var label=kind==='model'?'MODEL':'DASHBOARD';
@@ -1635,14 +1642,14 @@ document.addEventListener('DOMContentLoaded', function(){
     dashLegacy.forEach(function(u){if(isImageUrl(u)) dashImages.push(u); else dashFiles.push(u);});
     modelImages=modelImages.filter(function(u,i,a){return a.indexOf(u)===i;}); dashImages=dashImages.filter(function(u,i,a){return a.indexOf(u)===i;});
     modelFiles=modelFiles.filter(function(u,i,a){return a.indexOf(u)===i;}); dashFiles=dashFiles.filter(function(u,i,a){return a.indexOf(u)===i;});
-    modelImages.forEach(function(u,n){panels.push(mediaFrame(T.model,u,'model',n));});
-    dashImages.forEach(function(u,n){panels.push(mediaFrame(T.dash,u,'dash',n));});
+    if(modelParts.length){modelParts.forEach(function(x,n){panels.push(componentPanel(x,'model',n));});}else{modelImages.forEach(function(u,n){panels.push(mediaFrame(T.model,u,'model',n));});}
+    if(dashParts.length){dashParts.forEach(function(x,n){panels.push(componentPanel(x,'dash',n));});}else{dashImages.forEach(function(u,n){panels.push(mediaFrame(T.dash,u,'dash',n));});}
     modelFiles.forEach(function(u,n){files.push(fileCard(T.model,u,'model',n));});
     dashFiles.forEach(function(u,n){files.push(fileCard(T.dash,u,'dash',n));});
-    if(!modelImages.length && !modelFiles.length)panels.push(fallbackPanel(T.model,'model'));
-    if(!dashImages.length && !dashFiles.length)panels.push(fallbackPanel(T.dash,'dash'));
-    box.innerHTML='<button class="modal-close" id="modalClose" aria-label="'+T.close+'"><span class="menu-icon">×</span></button><div class="modal-kicker">'+esc(langText(row,'cat'))+'</div><h3 class="modal-title">'+esc(langText(row,'title'))+'</h3><div class="case-visuals">'+panels.join('')+'</div>'+(files.length?'<div class="case-files">'+files.join('')+'</div>':'')+((modelParts.length||dashParts.length)?'<div class="project-components">'+componentsSection(T.model,modelParts,ar?'أجزاء النموذج':'MODEL COMPONENTS')+componentsSection(T.dash,dashParts,ar?'أجزاء لوحة التحليل':'DASHBOARD COMPONENTS')+'</div>':'')+'<div class="modal-content-grid"><div class="modal-copy"><h4>'+T.overview+'</h4><p>'+esc(langText(row,'overview'))+'</p><h4>'+T.problem+'</h4><p>'+esc(langText(row,'problem'))+'</p><h4>'+T.objective+'</h4><p>'+esc(langText(row,'objective'))+'</p><h4>'+T.data+'</h4><p>'+esc(langText(row,'data'))+'</p></div><div class="modal-copy"><h4>'+T.analysis+'</h4><p>'+esc(langText(row,'analysis'))+'</p><h4>'+T.findings+'</h4><p>'+esc(langText(row,'findings'))+'</p><h4>'+T.lessons+'</h4><p>'+esc(langText(row,'lessons'))+'</p></div></div>';
-    overlay.classList.add('open'); document.getElementById('modalClose').addEventListener('click',function(){overlay.classList.remove('open');}); document.querySelectorAll('[data-lightbox]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var lb=document.getElementById('cmsLightbox');lb.querySelector('img').src=a.getAttribute('data-lightbox');lb.classList.add('open');});});
+    if(!panels.length && !modelFiles.length)panels.push(fallbackPanel(T.model,'model'));
+    if(!panels.length && !dashFiles.length)panels.push(fallbackPanel(T.dash,'dash'));
+    box.innerHTML='<button class="modal-close" id="modalClose" aria-label="'+T.close+'"><span class="menu-icon">×</span></button><div class="modal-kicker">'+esc(langText(row,'cat'))+'</div><h3 class="modal-title">'+esc(langText(row,'title'))+'</h3><div class="case-visuals">'+panels.join('')+'</div>'+(files.length?'<div class="case-files">'+files.join('')+'</div>':'')+'<div class="modal-content-grid"><div class="modal-copy"><h4>'+T.overview+'</h4><p>'+esc(langText(row,'overview'))+'</p><h4>'+T.problem+'</h4><p>'+esc(langText(row,'problem'))+'</p><h4>'+T.objective+'</h4><p>'+esc(langText(row,'objective'))+'</p><h4>'+T.data+'</h4><p>'+esc(langText(row,'data'))+'</p></div><div class="modal-copy"><h4>'+T.analysis+'</h4><p>'+esc(langText(row,'analysis'))+'</p><h4>'+T.findings+'</h4><p>'+esc(langText(row,'findings'))+'</p><h4>'+T.lessons+'</h4><p>'+esc(langText(row,'lessons'))+'</p></div></div>';
+    overlay.classList.add('open'); document.getElementById('modalClose').addEventListener('click',function(){overlay.classList.remove('open');});
   }
   async function getRows(endpoint){var r=await fetch(endpoint,{cache:'no-store'});if(!r.ok)throw Error('load failed');return await r.json();}
   async function loadCms(){
@@ -1655,6 +1662,7 @@ document.addEventListener('DOMContentLoaded', function(){
   document.addEventListener('click',function(e){if(e.target.id==='modalOverlay')document.getElementById('modalOverlay').classList.remove('open');});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'){var o=document.getElementById('modalOverlay');if(o)o.classList.remove('open');}});
   if(!document.getElementById('cmsLightbox')){var lb=document.createElement('div');lb.id='cmsLightbox';lb.className='lightbox';lb.innerHTML='<button class="lightbox-close" aria-label="Close">×</button><img alt="Preview">';document.body.appendChild(lb);lb.addEventListener('click',function(e){if(e.target===lb||e.target.classList.contains('lightbox-close'))lb.classList.remove('open');});}
+  document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('[data-lightbox]');if(a){e.preventDefault();e.stopPropagation();var lb=document.getElementById('cmsLightbox');if(lb){var im=lb.querySelector('img');im.src=a.getAttribute('data-lightbox')||'';im.alt=a.getAttribute('aria-label')||'Preview';lb.classList.add('open');}}});
 })();
 </script>
 
