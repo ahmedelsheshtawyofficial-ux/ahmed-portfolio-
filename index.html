@@ -496,6 +496,8 @@ header.scrolled{background:rgba(5,5,5,.88);backdrop-filter:blur(18px);box-shadow
 .btn-primary:hover{background:#fff;color:#050505;transform:translateY(-2px);}
 .btn-secondary{border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:10px;padding:15px 22px;}
 .btn-secondary:hover{border-color:var(--accent);background:rgba(255,77,0,.08);}
+[data-theme="dark"] .btn-secondary{border-color:rgba(255,255,255,.35);color:#fff;background:transparent;}
+[data-theme="dark"] .btn-secondary:hover{border-color:var(--accent);color:#fff;background:rgba(255,77,0,.08);}
 .hero-grid > .portrait-stage{grid-column:2;grid-row:1;}
 .portrait-stage{max-width:none;width:min(620px,100%);height:760px;aspect-ratio:auto;margin:0 auto;position:relative;transform:translateY(58px);}
 .portrait-frame{border:0;background:transparent;border-radius:0;overflow:visible;}
@@ -636,6 +638,9 @@ section{padding:120px 0;}
 /* Light-mode visibility fixes for secondary / LinkedIn CTA */
 .btn-secondary{border-color:#d4d0c6;color:#111;background:transparent;}
 .btn-secondary:hover{border-color:#111;background:#fff;color:#111;}
+/* Targeted fix: keep the Hero contact CTA visible on the always-dark hero. */
+.hero .btn-secondary{border-color:rgba(255,255,255,.35);color:#fff;background:transparent;}
+.hero .btn-secondary:hover{border-color:var(--accent);color:#fff;background:rgba(255,77,0,.08);}
 
 /* Keep the hero secondary CTA readable on the always-dark hero. */
 .hero .btn-secondary{border-color:rgba(255,255,255,.2);color:#fff;background:transparent;}

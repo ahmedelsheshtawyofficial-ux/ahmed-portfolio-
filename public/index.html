@@ -361,10 +361,7 @@ nav{display:flex; align-items:center; justify-content:space-between;}
 .brand-statement{text-align:center; padding:130px 0;}
 .brand-statement h2{font-size:clamp(30px,5vw,50px); line-height:1.2; max-width:760px; margin:0 auto 24px;}
 .brand-statement p{color:var(--ink-soft); font-size:17px; max-width:520px; margin:0 auto;}
-.brand-watermark{position:absolute;right:-4%;bottom:-14%;width:min(58vw,760px);max-height:78%;object-fit:contain;object-position:center;opacity:.10;pointer-events:none;user-select:none;filter:none;}
 .brand-statement > .wrap{position:relative;z-index:2;}
-.brand-statement > .brand-watermark{z-index:1;}
-[data-theme="dark"] .brand-watermark{opacity:.11;}
 
 /* ============ CONTACT ============ */
 .contact-card{
@@ -499,6 +496,8 @@ header.scrolled{background:rgba(5,5,5,.88);backdrop-filter:blur(18px);box-shadow
 .btn-primary:hover{background:#fff;color:#050505;transform:translateY(-2px);}
 .btn-secondary{border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:10px;padding:15px 22px;}
 .btn-secondary:hover{border-color:var(--accent);background:rgba(255,77,0,.08);}
+[data-theme="dark"] .btn-secondary{border-color:rgba(255,255,255,.35);color:#fff;background:transparent;}
+[data-theme="dark"] .btn-secondary:hover{border-color:var(--accent);color:#fff;background:rgba(255,77,0,.08);}
 .hero-grid > .portrait-stage{grid-column:2;grid-row:1;}
 .portrait-stage{max-width:none;width:min(620px,100%);height:760px;aspect-ratio:auto;margin:0 auto;position:relative;transform:translateY(58px);}
 .portrait-frame{border:0;background:transparent;border-radius:0;overflow:visible;}
@@ -639,6 +638,9 @@ section{padding:120px 0;}
 /* Light-mode visibility fixes for secondary / LinkedIn CTA */
 .btn-secondary{border-color:#d4d0c6;color:#111;background:transparent;}
 .btn-secondary:hover{border-color:#111;background:#fff;color:#111;}
+/* Targeted fix: keep the Hero contact CTA visible on the always-dark hero. */
+.hero .btn-secondary{border-color:rgba(255,255,255,.35);color:#fff;background:transparent;}
+.hero .btn-secondary:hover{border-color:var(--accent);color:#fff;background:rgba(255,77,0,.08);}
 
 /* Insights */
 #insights{background:#e9e6dd!important;}
@@ -1164,7 +1166,6 @@ html[dir="rtl"] .util-toggles{margin-left:0; margin-right:8px;}
 
 <!-- BRAND STATEMENT -->
 <section class="brand-statement" data-cms-section="brand">
-  <img class="brand-watermark" data-cms-brand-watermark src="/assets/logo-header.png" alt="" aria-hidden="true">
   <div class="wrap">
     <h2 class="reveal" data-i18n="brandstatement.heading">Numbers tell a story. I analyze it.</h2>
     <p class="reveal" data-i18n="brandstatement.sub">Finance is more than calculations. Behind every number is a business decision, an operational driver, or a story waiting to be understood.</p>
@@ -1716,11 +1717,6 @@ document.addEventListener('DOMContentLoaded', function(){
           test.src=logo;
         }
       });
-    });
-    document.querySelectorAll('[data-cms-brand-watermark]').forEach(function(el){
-      var src=getSetting('site.brand_logo_url')||'/assets/logo-header.png';
-      el.src=src;
-      el.style.display=src?'block':'none';
     });
     var cta=document.querySelector('[data-cms-insights-cta]');if(cta){var cu=getSetting('insights.cta_url');var cv=getSetting('insights.cta_visible')!=='0';cta.href=cu||'#';cta.style.display=cv&&cu?'inline-flex':'none';}
   }
