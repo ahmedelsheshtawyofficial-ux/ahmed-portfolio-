@@ -116,16 +116,58 @@ function projectPreviewImage(row){
   for(const x of [row.model_url,row.dashboard_url,...urls]) if(x && /\.(png|jpe?g|gif|webp|svg|avif)(?:[?#].*)?$/i.test(String(x))) return String(x);
   return urls[0] || '';
 }
+function crawlerRequest(request){
+  const ua=String(request.headers.get('user-agent')||'').toLowerCase();
+  return /linkedinbot|twitterbot|facebookexternalhit|facebot|whatsapp|slackbot|discordbot|telegrambot|googlebot|bingbot/i.test(ua);
+}
+function absoluteAssetUrl(value,origin){
+  const v=String(value||'').trim();
+  if(!v)return '';
+  if(/^https?:\/\//i.test(v))return v;
+  return new URL(v.replace(/^\/+/,''),origin+'/').toString();
+}
+function projectShareMeta(row,request){
+  const origin=new URL(request.url).origin;
+  const canonical=origin+'/project/'+encodeURIComponent(String(row.slug||''));
+  const title=String(row.title_en||row.title_ar||'Project');
+  const description=String(row.desc_en||row.desc_ar||'Financial analysis and modeling project by Ahmed Elsheshtawy.').replace(/\s+/g,' ').trim();
+  const image=projectPreviewImage(row);
+  const imageUrl=absoluteAssetUrl(image,origin) || absoluteAssetUrl('/assets/logo-header.png',origin);
+  return {origin,canonical,title,description,imageUrl};
+}
+function crawlerHtml(row,request){
+  const m=projectShareMeta(row,request);
+  const e=htmlEscape;
+  return '<!doctype html><html lang="en"><head><meta charset="utf-8">'+
+    '<title>'+e(m.title)+'</title>'+
+    '<meta name="description" content="'+e(m.description)+'">'+
+    '<meta name="robots" content="index,follow,max-image-preview:large">'+
+    '<meta property="og:type" content="article">'+
+    '<meta property="og:title" content="'+e(m.title)+'">'+
+    '<meta property="og:description" content="'+e(m.description)+'">'+
+    '<meta property="og:url" content="'+e(m.canonical)+'">'+
+    '<meta property="og:site_name" content="Ahmed Elsheshtawy">'+
+    '<meta property="og:image" content="'+e(m.imageUrl)+'">'+
+    '<meta property="og:image:alt" content="'+e(m.title)+'">'+
+    '<meta property="og:image:width" content="1200">'+
+    '<meta property="og:image:height" content="630">'+
+    '<meta property="og:image:type" content="image/png">'+
+    '<meta name="twitter:card" content="summary_large_image">'+
+    '<meta name="twitter:title" content="'+e(m.title)+'">'+
+    '<meta name="twitter:description" content="'+e(m.description)+'">'+
+    '<meta name="twitter:image" content="'+e(m.imageUrl)+'">'+
+    '<link rel="canonical" href="'+e(m.canonical)+'">'+
+    '</head><body><main><h1>'+e(m.title)+'</h1><p>'+e(m.description)+'</p><p><a href="'+e(m.canonical)+'">View project</a></p></main></body></html>';
+}
 async function projectSharePage(request,env,slug){
   const {results}=await env.DB.prepare('SELECT * FROM projects WHERE slug=? AND published=1 LIMIT 1').bind(slug).all();
   const row=(results||[])[0];
   if(!row) return env.ASSETS.fetch(request);
+  if(crawlerRequest(request)){
+    return new Response(crawlerHtml(row,request),{status:200,headers:{'content-type':'text/html;charset=UTF-8','cache-control':'public, max-age=300','x-robots-tag':'index, follow, max-image-preview:large'}});
+  }
   const origin=new URL(request.url).origin;
-  const canonical=origin+'/project/'+encodeURIComponent(String(row.slug));
-  const title=String(row.title_en||row.title_ar||'Project');
-  const description=String(row.desc_en||row.desc_ar||'Financial analysis and modeling project by Ahmed Elsheshtawy.');
-  const image=projectPreviewImage(row);
-  const imageUrl=image ? (image.startsWith('http') ? image : new URL(image.replace(/^\//,''),origin+'/').toString()) : '';
+  const {canonical,title,description,imageUrl}=projectShareMeta(row,request);
   const assetResponse=await env.ASSETS.fetch(new Request(new URL('/',request.url),request));
   let html=await assetResponse.text();
   const meta=[
@@ -135,14 +177,17 @@ async function projectSharePage(request,env,slug){
     '<meta property="og:description" content="'+htmlEscape(description)+'">',
     '<meta property="og:url" content="'+htmlEscape(canonical)+'">',
     '<meta property="og:site_name" content="Ahmed Elsheshtawy">',
-    imageUrl ? '<meta property="og:image" content="'+htmlEscape(imageUrl)+'">' : '',
-    imageUrl ? '<meta property="og:image:alt" content="'+htmlEscape(title)+'">' : '',
+    '<meta property="og:image" content="'+htmlEscape(imageUrl)+'">',
+    '<meta property="og:image:alt" content="'+htmlEscape(title)+'">',
+    '<meta property="og:image:width" content="1200">',
+    '<meta property="og:image:height" content="630">',
+    '<meta property="og:image:type" content="image/png">',
     '<meta name="twitter:card" content="summary_large_image">',
     '<meta name="twitter:title" content="'+htmlEscape(title)+'">',
     '<meta name="twitter:description" content="'+htmlEscape(description)+'">',
-    imageUrl ? '<meta name="twitter:image" content="'+htmlEscape(imageUrl)+'">' : '',
+    '<meta name="twitter:image" content="'+htmlEscape(imageUrl)+'">',
     '<link rel="canonical" href="'+htmlEscape(canonical)+'">'
-  ].filter(Boolean).join('');
+  ].join('');
   html=html.replace('</head>',meta+'</head>');
   return new Response(html,{status:200,headers:{'content-type':'text/html;charset=UTF-8','cache-control':'public, max-age=300'}});
 }
