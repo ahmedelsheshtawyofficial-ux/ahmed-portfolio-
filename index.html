@@ -1859,11 +1859,34 @@ document.addEventListener('DOMContentLoaded', function(){
   .fc-2{top:45%;right:2%;}
 }
 @media(max-width:560px){
-  .portrait-stage{height:380px;}
+  .portrait-stage{height:420px;}
   .portrait-frame::before{width:285px;height:285px;top:4%;}
   .portrait-frame::after{width:307px;height:307px;top:2.4%;}
   .portrait-image{width:272px;height:272px;top:4.8%;}
-  .fc-1{top:18%;}
-  .fc-2{top:42%;}
+  /* Mobile only: restore the two floating role cards from desktop. */
+  .float-card{display:block;}
+  .float-card b{font-size:11px;}
+  .float-card span{font-size:9px;}
+  .fc-1{top:15%;left:1%;}
+  .fc-2{top:43%;right:1%;}
+  /* Mobile only: keep the credibility strip visible directly below the portrait. */
+  .credibility-strip{
+    margin-top:0;
+    padding:14px 0;
+    display:flex;
+    flex-wrap:nowrap;
+    justify-content:flex-start;
+    gap:18px;
+    overflow:hidden;
+    white-space:nowrap;
+    border-top:1px solid rgba(255,255,255,.12);
+    border-bottom:1px solid rgba(255,255,255,.12);
+  }
+  .credibility-strip span{
+    flex:0 0 auto;
+    font-size:9px;
+    letter-spacing:.04em;
+    color:rgba(255,255,255,.42);
+  }
 }
 </style>
