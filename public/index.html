@@ -480,8 +480,8 @@ header.scrolled{background:rgba(5,5,5,.88);backdrop-filter:blur(18px);box-shadow
   min-height:900px;padding:0;position:relative;overflow:hidden;
   background:#050505;color:#fff;display:flex;align-items:center;
 }
-.hero::before{content:"";position:absolute;width:520px;height:520px;right:-180px;top:80px;border:1px solid rgba(255,77,0,.2);border-radius:50%;}
-.hero::after{content:"";position:absolute;width:720px;height:720px;right:-300px;top:-30px;border:1px solid rgba(255,255,255,.08);border-radius:50%;}
+.hero::before{display:none;}
+.hero::after{display:none;}
 .hero .wrap{width:100%;position:relative;z-index:2;}
 .hero-grid{grid-template-columns:.82fr 1.18fr;gap:20px;min-height:900px;align-items:center;}
 .hero-copy{position:relative;z-index:5;padding-top:70px;}
@@ -499,20 +499,20 @@ header.scrolled{background:rgba(5,5,5,.88);backdrop-filter:blur(18px);box-shadow
 [data-theme="dark"] .btn-secondary{border-color:rgba(255,255,255,.35);color:#fff;background:transparent;}
 [data-theme="dark"] .btn-secondary:hover{border-color:var(--accent);color:#fff;background:rgba(255,77,0,.08);}
 .hero-grid > .portrait-stage{grid-column:2;grid-row:1;}
-/* Portrait treatment — updated to match the supplied 5555 reference. */
-.portrait-stage{max-width:none;width:min(620px,100%);height:760px;aspect-ratio:auto;margin:0 auto;position:relative;transform:translateY(58px);}
-.portrait-frame{border:0;background:transparent;border-radius:0;overflow:visible;position:absolute;inset:0;z-index:0;}
-.portrait-frame::before{content:"";position:absolute;width:560px;height:560px;left:50%;top:8%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle at 50% 46%,#ff5a0a 0%,#ff4d00 58%,#df3f00 100%);border:2px solid rgba(255,77,0,.9);box-shadow:0 0 0 1px rgba(255,77,0,.2),0 0 45px rgba(255,77,0,.18),0 28px 70px rgba(0,0,0,.45);z-index:0;}
-.portrait-frame::after{content:"";position:absolute;width:610px;height:610px;left:50%;top:5%;transform:translateX(-50%);border:1px solid rgba(255,77,0,.42);border-radius:50%;box-shadow:0 0 0 14px rgba(255,77,0,.06),0 0 0 42px rgba(255,255,255,.035),0 0 55px rgba(255,77,0,.12);pointer-events:none;z-index:0;}
-.portrait-image{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:contrast(1.03);z-index:1;}
+/* Portrait treatment — close visual match to reference 5555: compact circle, clipped portrait, subtle rings. */
+.portrait-stage{max-width:560px;width:100%;height:560px;margin:0 auto;position:relative;transform:none;}
+.portrait-frame{position:absolute;width:430px;height:430px;left:50%;top:58px;transform:translateX(-50%);border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 44%,#ff5a0a 0%,#ff4d00 64%,#e74400 100%);border:1.5px solid rgba(255,77,0,.9);box-shadow:0 0 0 1px rgba(255,77,0,.12),0 18px 40px rgba(0,0,0,.28);z-index:1;}
+.portrait-frame::before{content:"";position:absolute;inset:-1px;border-radius:50%;border:1px solid rgba(255,255,255,.12);box-shadow:inset 0 0 28px rgba(0,0,0,.08);pointer-events:none;z-index:3;}
+.portrait-frame::after{content:"";position:absolute;width:456px;height:456px;left:50%;top:50%;transform:translate(-50%,-50%);border:1px solid rgba(255,77,0,.34);border-radius:50%;box-shadow:0 0 0 12px rgba(255,77,0,.035);pointer-events:none;z-index:4;}
+.portrait-image{position:absolute;left:50%;top:3px;width:455px;height:455px;transform:translateX(-50%);object-fit:contain;object-position:center top;filter:contrast(1.02);z-index:2;}
 .portrait-placeholder{display:none;}
 
 .float-card{background:rgba(5,5,5,.78);color:#fff;border:1px solid rgba(255,77,0,.65);box-shadow:0 16px 40px rgba(0,0,0,.3);backdrop-filter:blur(12px);border-radius:11px;padding:12px 15px;z-index:8;}
 .float-card::after{content:"";position:absolute;right:8px;bottom:6px;width:7px;height:7px;background:var(--accent);border-radius:1px;box-shadow:0 0 18px rgba(255,77,0,.9);}
 .float-card b{color:#fff;font-size:13px;}
 .float-card span{color:rgba(255,255,255,.58);}
-.fc-1{top:22%;left:4%;}
-.fc-2{top:49%;right:0;bottom:auto;}
+.fc-1{top:16%;left:0%;}
+.fc-2{top:55%;right:-1%;bottom:auto;}
 .fc-3{display:none;}
 .credibility-strip{border-color:rgba(255,255,255,.12);margin-top:-8px;position:relative;z-index:10;}
 .credibility-strip span{color:rgba(255,255,255,.42);}
