@@ -1829,7 +1829,61 @@ document.addEventListener('DOMContentLoaded', function(){
   if(typeof baseApplyLang==='function'){window.applyLang=function(l){baseApplyLang(l);setTimeout(function(){renderServices();renderApproach();renderSkills();renderCerts();renderCustomSections();renderNav();applySectionOrder();if(window.refreshCms)window.refreshCms();},0);};}
 })();
 </script>
+
+<style id="rtl-float-cards-exact-english-position">
+/* RTL ONLY: keep the Arabic role cards in the exact same positions as English.
+   No portrait/image, sizing, alignment, or other hero changes. */
+html[dir="rtl"] .fc-1{left:1% !important;right:auto !important;}
+html[dir="rtl"] .fc-2{right:1% !important;left:auto !important;}
+@media(max-width:560px){
+  html[dir="rtl"] .fc-1{top:31% !important;left:1% !important;right:auto !important;}
+  html[dir="rtl"] .fc-2{top:53% !important;right:1% !important;left:auto !important;}
+  html[dir="rtl"] .float-card{width:auto !important;max-width:none !important;}
+}
+</style>
 </html>
+
+<style id="arabic-only-fixes">
+/* Arabic-only fixes. No portrait/image/layout changes. */
+html[dir="rtl"] .credibility-strip{
+  justify-content:space-between;
+  gap:0;
+  flex-wrap:nowrap;
+}
+html[dir="rtl"] .credibility-strip span{
+  white-space:nowrap;
+  font-size:14px;
+  letter-spacing:normal;
+}
+@media(max-width:520px){
+  /* Make Arabic role cards match the English mobile cards exactly. */
+  html[dir="rtl"] .float-card{
+    display:block;
+    width:max-content;
+    max-width:calc(100vw - 48px);
+    box-sizing:border-box;
+    padding:12px 15px;
+    border-radius:11px;
+    background:rgba(5,5,5,.78);
+    border:1px solid rgba(255,77,0,.65);
+    box-shadow:0 16px 40px rgba(0,0,0,.3);
+    backdrop-filter:blur(12px);
+    z-index:8;
+  }
+  html[dir="rtl"] .float-card b{font-size:13px;color:#fff;}
+  html[dir="rtl"] .float-card span{font-size:11.5px;color:rgba(255,255,255,.58);}
+  html[dir="rtl"] .fc-1{top:8%;right:1%;left:auto;}
+  html[dir="rtl"] .fc-2{top:68%;left:1%;right:auto;}
+  html[dir="rtl"] .credibility-strip{
+    margin-top:0;
+    gap:0;
+    justify-content:space-between;
+    padding:18px 0;
+  }
+  html[dir="rtl"] .credibility-strip span{font-size:12px;}
+}
+</style>
+
 
 
 
