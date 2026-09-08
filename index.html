@@ -1063,13 +1063,15 @@ html[dir="rtl"] .util-toggles{margin-left:0; margin-right:8px;}
 
 /* Arabic desktop: keep the same card geometry/side placement as English desktop. */
 @media (min-width: 801px){
+  /* Arabic desktop only: bring the two cards closer to the orange frame. */
   html[dir="rtl"] .fc-1{
-    left:-10%!important;
+    left:-6%!important;
     right:auto!important;
   }
   html[dir="rtl"] .fc-2{
-    right:-12%!important;
+    right:-8%!important;
     left:auto!important;
+    top:60%!important;
   }
 }
 
