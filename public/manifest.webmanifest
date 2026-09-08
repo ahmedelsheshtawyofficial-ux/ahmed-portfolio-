@@ -1,0 +1,22 @@
+{
+  "name": "Ahmed Elsheshtawy — Financial Analyst",
+  "short_name": "Ahmed Elsheshtawy",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#15181A",
+  "theme_color": "#15181A",
+  "icons": [
+    {
+      "src": "/assets/favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
