@@ -1030,6 +1030,49 @@ html[dir="rtl"] .util-toggles{margin-left:0; margin-right:8px;}
   }
 }
 
+
+/* FINAL LAYOUT FIXES — language-specific geometry only; no image changes */
+@media (max-width: 800px){
+  /* Keep the mobile credibility row from clipping "Accounting" and avoid stretching items. */
+  .credibility-strip{
+    flex-wrap:wrap!important;
+    justify-content:flex-start!important;
+    align-items:center!important;
+    column-gap:18px!important;
+    row-gap:8px!important;
+    overflow:visible!important;
+    white-space:normal!important;
+  }
+  .credibility-strip span{
+    flex:0 0 auto!important;
+    width:auto!important;
+    min-width:max-content!important;
+    white-space:nowrap!important;
+  }
+
+  /* Arabic mobile: use the exact same physical card positions as English mobile. */
+  html[dir="rtl"] .fc-1{
+    left:1%!important;
+    right:auto!important;
+  }
+  html[dir="rtl"] .fc-2{
+    right:1%!important;
+    left:auto!important;
+  }
+}
+
+/* Arabic desktop: keep the same card geometry/side placement as English desktop. */
+@media (min-width: 801px){
+  html[dir="rtl"] .fc-1{
+    left:-10%!important;
+    right:auto!important;
+  }
+  html[dir="rtl"] .fc-2{
+    right:-12%!important;
+    left:auto!important;
+  }
+}
+
 </style>
 </head>
 <body>
