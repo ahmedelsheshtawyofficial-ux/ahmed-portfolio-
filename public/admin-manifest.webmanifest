@@ -1,0 +1,25 @@
+{
+  "id": "/admin.html",
+  "name": "Ahmed Elsheshtawy — Admin Dashboard",
+  "short_name": "Admin Dashboard",
+  "description": "Ahmed Elsheshtawy website administration dashboard.",
+  "start_url": "/admin.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#101111",
+  "theme_color": "#101111",
+  "icons": [
+    {
+      "src": "/assets/admin-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/admin-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
