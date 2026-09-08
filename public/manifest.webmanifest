@@ -2,6 +2,7 @@
   "name": "Ahmed Elsheshtawy — Financial Analyst",
   "short_name": "Ahmed Elsheshtawy",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#15181A",
   "theme_color": "#15181A",
@@ -19,5 +20,6 @@
       "purpose": "any maskable"
     }
   ],
-  "id": "/site-app"
+  "id": "/site-app",
+  "scope": "/"
 }

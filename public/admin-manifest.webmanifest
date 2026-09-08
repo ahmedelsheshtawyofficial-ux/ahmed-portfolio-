@@ -4,7 +4,7 @@
   "short_name": "dashboard -ahmed elsheshtawy",
   "description": "Ahmed Elsheshtawy website administration dashboard.",
   "start_url": "/admin.html",
-  "scope": "/",
+  "scope": "/admin.html",
   "display": "standalone",
   "background_color": "#101111",
   "theme_color": "#101111",
