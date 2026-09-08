@@ -1,7 +1,7 @@
 {
   "id": "/admin.html",
-  "name": "Ahmed Elsheshtawy — Admin Dashboard",
-  "short_name": "Admin Dashboard",
+  "name": "dashboard -ahmed elsheshtawy",
+  "short_name": "dashboard -ahmed elsheshtawy",
   "description": "Ahmed Elsheshtawy website administration dashboard.",
   "start_url": "/admin.html",
   "scope": "/",
