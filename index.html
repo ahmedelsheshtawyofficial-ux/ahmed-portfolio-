@@ -392,7 +392,7 @@ nav{display:flex; align-items:center; justify-content:space-between;}
 footer{padding:60px 0 40px; border-top:1px solid var(--line); margin-top:40px;}
 .footer-grid{display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:30px;}
 .footer-links{display:flex; gap:26px; font-size:14px; color:var(--ink-soft);}
-.footer-bottom{margin-top:40px; padding-top:24px; border-top:1px solid var(--line); font-size:14px; color:var(--ink-faint); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+.footer-bottom{margin-top:40px; padding-top:24px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-faint); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
 
 /* ============ MODAL ============ */
 .modal-overlay{
@@ -1704,8 +1704,8 @@ document.addEventListener('DOMContentLoaded', function(){
   function tags(row){return String(row.tags||'').split(',').map(function(x){return x.trim();}).filter(Boolean).map(function(x){return '<span class="tag">'+esc(x)+'</span>';}).join('');}
   function projectMock(row){return '<div class="mock-sheet"><div class="row head"><div class="cell">Line Item</div><div class="cell">2024A</div><div class="cell">2025A</div></div><div class="row"><div class="cell">Revenue<div class="bar" style="width:72%"></div></div><div class="cell">↗</div><div class="cell">↗</div></div><div class="row"><div class="cell">Margin<div class="bar" style="width:52%"></div></div><div class="cell">—</div><div class="cell">↗</div></div><div class="row"><div class="cell">EBITDA<div class="bar" style="width:38%"></div></div><div class="cell">—</div><div class="cell">↗</div></div></div>';}
   function renderProjects(rows){
-    var c=document.getElementById('projectsContainer'); if(!c)return;var sec=document.getElementById('work');
-    if(!rows.length){c.innerHTML='';if(sec)sec.style.display='none';return;}if(sec)sec.style.display='';
+    var c=document.getElementById('projectsContainer'); if(!c)return;
+    if(!rows.length){c.innerHTML='<div class="cms-empty">'+(currentLang==='ar'?'لا توجد مشاريع منشورة حاليًا.':'No published projects yet.')+'</div>';return;}
     c.innerHTML=rows.map(function(r){
       return '<article class="project-card" data-project-slug="'+esc(r.slug)+'" data-project-url="/project/'+esc(r.slug)+'" tabindex="0" role="link" aria-label="'+esc(langText(r,'title'))+'">'+
         '<div class="project-visual cms-project-visual"><div>'+projectMock(r)+'</div></div>'+
@@ -1717,9 +1717,9 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }
   function renderVideos(rows){
-    var c=document.getElementById('videosContainer'); if(!c)return;var sec=document.getElementById('videos');
-    if(!rows.length){c.innerHTML='';if(sec)sec.style.display='none';return;}
-    if(sec)sec.style.display='';c.innerHTML=rows.map(function(r){
+    var c=document.getElementById('videosContainer'); if(!c)return;
+    if(!rows.length){c.innerHTML='<div class="cms-empty">'+(currentLang==='ar'?'لا توجد فيديوهات منشورة حاليًا.':'No published videos yet.')+'</div>';return;}
+    c.innerHTML=rows.map(function(r){
       var img=r.thumbnail_url? ' style="background-image:url(&quot;'+esc(r.thumbnail_url)+'&quot;)"':' ';
       var thumbClass=r.thumbnail_url?'cms-video-thumb has-image':'cms-video-thumb';
       var link=r.url||'#';
@@ -1788,8 +1788,7 @@ document.addEventListener('DOMContentLoaded', function(){
   async function loadCms(){
     try{var results=await Promise.all([getRows('/api/projects'),getRows('/api/videos'),getRows('/api/posts')]);renderProjects(results[0]);renderVideos(results[1]);renderPosts(results[2]);openProjectFromUrl(results[0]);}catch(e){console.warn(e);}
   }
-  function formatCmsDate(v){var s=String(v||'').trim();if(!s)return '';var m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);if(!m)return s;var d=new Date(Number(m[1]),Number(m[2])-1,Number(m[3]));if(isNaN(d.getTime()))return s;return currentLang==='ar'?d.toLocaleDateString('ar-EG',{day:'numeric',month:'short',year:'numeric'}):d.toLocaleDateString('en-US',{day:'numeric',month:'short',year:'numeric'});}
-  function renderPosts(rows){var c=document.getElementById('insightsContainer');if(!c)return;if(!rows.length){c.innerHTML='';var sec=document.getElementById('insights');if(sec)sec.style.display='none';return;}var sec=document.getElementById('insights');if(sec)sec.style.display='';c.innerHTML=rows.map(function(r){return '<div class="insight-card"><span class="insight-cat">'+esc(langText(r,'cat'))+'</span><h3>'+esc(langText(r,'title'))+'</h3><p>'+esc(langText(r,'desc'))+'</p><div class="insight-meta"><span>'+esc(formatCmsDate(langText(r,'date'))||langText(r,'date'))+'</span><a href="'+esc(r.url||'#')+'" target="_blank" rel="noopener"><span>'+(currentLang==='ar'?'اقرأ المزيد':'Read More')+'</span> <span class="icon-arrow">↗</span></a></div></div>';}).join('');}
+  function renderPosts(rows){var c=document.getElementById('insightsContainer');if(!c)return;if(!rows.length){c.innerHTML='<div class="cms-empty">'+(currentLang==='ar'?'لا توجد منشورات منشورة حاليًا.':'No published posts yet.')+'</div>';return;}c.innerHTML=rows.map(function(r){return '<div class="insight-card"><span class="insight-cat">'+esc(langText(r,'cat'))+'</span><h3>'+esc(langText(r,'title'))+'</h3><p>'+esc(langText(r,'desc'))+'</p><div class="insight-meta"><span>'+esc(langText(r,'date'))+'</span><a href="'+esc(r.url||'#')+'" target="_blank" rel="noopener"><span>'+(currentLang==='ar'?'اقرأ المزيد':'Read More')+'</span> <span class="icon-arrow">↗</span></a></div></div>';}).join('');}
   window.refreshCms=loadCms;
   document.addEventListener('DOMContentLoaded',loadCms);
   var oldApplyLang=window.applyLang;if(typeof oldApplyLang==='function'){window.applyLang=function(lang){oldApplyLang(lang);setTimeout(loadCms,0);};}
@@ -1836,10 +1835,10 @@ document.addEventListener('DOMContentLoaded', function(){
     });
     var cta=document.querySelector('[data-cms-insights-cta]');if(cta){var cu=getSetting('insights.cta_url');var cv=getSetting('insights.cta_visible')!=='0';cta.href=cu||'#';cta.style.display=cv&&cu?'inline-flex':'none';}
   }
-  function renderServices(){var c=document.getElementById('servicesContainer');if(!c)return;var sec=document.getElementById('what-i-do');if(!cms.services.length){c.innerHTML='';if(sec)sec.style.display='none';return;}if(sec)sec.style.display='';c.innerHTML=cms.services.map(function(r,i){return '<div class="service-card"><div class="service-num">'+String(i+1).padStart(2,'0')+'</div><div class="service-content"><h3>'+esc(lang(r,'title'))+'</h3><p>'+esc(lang(r,'desc'))+'</p></div><div class="service-arrow"><span class="icon-arrow">↗</span></div></div>';}).join('');}
-  function renderApproach(){var c=document.getElementById('approachContainer');if(!c)return;var sec=document.getElementById('approach');if(!cms.approach.length){c.innerHTML='';if(sec)sec.style.display='none';return;}if(sec)sec.style.display='';c.innerHTML=cms.approach.map(function(r,i){return '<div class="approach-item"><span class="approach-num">'+String(i+1).padStart(2,'0')+'</span><div><h3>'+esc(lang(r,'title'))+'</h3><p>'+esc(lang(r,'desc'))+'</p></div></div>';}).join('');}
-  function renderSkills(){var c=document.getElementById('skillsContainer');if(!c)return;var sec=document.getElementById('skills');if(!cms.skills.length){c.innerHTML='';if(sec)sec.style.display='none';return;}if(sec)sec.style.display='';c.innerHTML=cms.skills.map(function(r){return '<div class="tool-chip"><span class="dot"></span>'+esc(lang(r,'name'))+'</div>';}).join('');}
-  function renderCerts(){var c=document.getElementById('certsContainer');if(!c)return;var sec=document.getElementById('certs');if(!cms.certs.length){c.innerHTML='';if(sec)sec.style.display='none';return;}if(sec)sec.style.display='';c.innerHTML=cms.certs.map(function(r){var done=String(r.status_en||'').toLowerCase().indexOf('completed')>=0;var featured=Number(r.featured)===1;var status=esc(lang(r,'status'));var name=esc(lang(r,'name'));var bg=r.logo_url?'<span class="cert-bg" aria-hidden="true" style="background-image:url(&quot;'+esc(r.logo_url)+'&quot;)"></span>':'';return '<div class="cert-card '+(featured?'featured ':'')+(done?'done':'')+'" data-watermark="'+name+'">'+bg+'<span class="cert-status '+(done?'done':'dev')+'">'+status+'</span><h3>'+name+(r.score?' <span class="cert-score">'+esc(r.score)+'</span>':'')+'</h3><p>'+esc(lang(r,'desc'))+'</p>'+(r.provider?'<small>'+esc(r.provider)+'</small>':'')+(r.credential_url?'<a class="project-link" href="'+esc(r.credential_url)+'" target="_blank" rel="noopener">Credential ↗</a>':'')+'</div>';}).join('');}
+  function renderServices(){var c=document.getElementById('servicesContainer');if(!c)return;c.innerHTML=cms.services.map(function(r,i){return '<div class="service-card"><div class="service-num">'+String(i+1).padStart(2,'0')+'</div><div class="service-content"><h3>'+esc(lang(r,'title'))+'</h3><p>'+esc(lang(r,'desc'))+'</p></div><div class="service-arrow"><span class="icon-arrow">↗</span></div></div>';}).join('');}
+  function renderApproach(){var c=document.getElementById('approachContainer');if(!c)return;c.innerHTML=cms.approach.map(function(r,i){return '<div class="approach-item"><span class="approach-num">'+String(i+1).padStart(2,'0')+'</span><div><h3>'+esc(lang(r,'title'))+'</h3><p>'+esc(lang(r,'desc'))+'</p></div></div>';}).join('');}
+  function renderSkills(){var c=document.getElementById('skillsContainer');if(!c)return;c.innerHTML=cms.skills.map(function(r){return '<div class="tool-chip"><span class="dot"></span>'+esc(lang(r,'name'))+'</div>';}).join('');}
+  function renderCerts(){var c=document.getElementById('certsContainer');if(!c)return;c.innerHTML=cms.certs.map(function(r){var done=String(r.status_en||'').toLowerCase().indexOf('completed')>=0;var featured=Number(r.featured)===1;var status=esc(lang(r,'status'));var name=esc(lang(r,'name'));var bg=r.logo_url?'<span class="cert-bg" aria-hidden="true" style="background-image:url(&quot;'+esc(r.logo_url)+'&quot;)"></span>':'';return '<div class="cert-card '+(featured?'featured ':'')+(done?'done':'')+'" data-watermark="'+name+'">'+bg+'<span class="cert-status '+(done?'done':'dev')+'">'+status+'</span><h3>'+name+(r.score?' <span class="cert-score">'+esc(r.score)+'</span>':'')+'</h3><p>'+esc(lang(r,'desc'))+'</p>'+(r.provider?'<small>'+esc(r.provider)+'</small>':'')+(r.credential_url?'<a class="project-link" href="'+esc(r.credential_url)+'" target="_blank" rel="noopener">Credential ↗</a>':'')+'</div>';}).join('');}
   var BUILTIN_SECTION_ORDER=['home','about','what-i-do','work','videos','approach','skills','certs','insights','brand','contact'];
   function sectionKey(el){return el.getAttribute('data-cms-section')||el.id||'';}
   function renderCustomSections(){
@@ -1869,7 +1868,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var footer=document.querySelector('body > footer');
     order.forEach(function(k){var el=document.querySelector('body > section[data-cms-section="'+CSS.escape(k)+'"], body > section#'+CSS.escape(k));if(el&&footer)document.body.insertBefore(el,footer);});
   }
-  function renderNav(){document.querySelectorAll('[data-cms-nav]').forEach(function(a){var slug=a.getAttribute('data-cms-nav');var r=cms.navigation.find(function(x){return x.slug===slug;});if(r){a.textContent=lang(r,'label');a.href=r.href;if(r.target)a.target=r.target;a.style.display=Number(r.published)!==0?'':'none';}else{a.style.display='none';}});}
+  function renderNav(){document.querySelectorAll('[data-cms-nav]').forEach(function(a){var slug=a.getAttribute('data-cms-nav');var r=cms.navigation.find(function(x){return x.slug===slug;});if(r){a.textContent=lang(r,'label');a.href=r.href;if(r.target)a.target=r.target;}});}
   var FALLBACK_SERVICES=[
     {title_en:'Financial Analysis',title_ar:'التحليل المالي',desc_en:'Analyzing revenue, expenses, profitability, margins, KPIs and financial performance.',desc_ar:'تحليل الإيرادات والمصروفات والربحية والهوامش ومؤشرات الأداء الرئيسية والأداء المالي العام.'},
     {title_en:'Financial Modeling',title_ar:'النمذجة المالية',desc_en:'Building structured financial models to understand historical performance, forecast results and evaluate business scenarios.',desc_ar:'بناء نماذج مالية منظمة لفهم الأداء التاريخي، والتنبؤ بالنتائج، وتقييم سيناريوهات الأعمال المختلفة.'},
@@ -1886,10 +1885,10 @@ document.addEventListener('DOMContentLoaded', function(){
     var rs=await Promise.all(endpoints.map(function(p){return p.catch(function(e){console.warn(e);return null;});}));
     cms.settings={};
     if(Array.isArray(rs[0])) rs[0].forEach(function(x){cms.settings[x.key]={en:x.en,ar:x.ar};});
-    cms.services=Array.isArray(rs[1])?rs[1]:FALLBACK_SERVICES;
+    cms.services=Array.isArray(rs[1])&&rs[1].length?rs[1]:FALLBACK_SERVICES;
     cms.approach=Array.isArray(rs[2])?rs[2]:[];
     cms.skills=Array.isArray(rs[3])?rs[3]:[];
-    cms.certs=Array.isArray(rs[4])?rs[4]:FALLBACK_CERTS;
+    cms.certs=Array.isArray(rs[4])&&rs[4].length?rs[4]:FALLBACK_CERTS;
     cms.navigation=Array.isArray(rs[5])?rs[5]:[];
     cms.sections=Array.isArray(rs[6])?rs[6]:[];
     applySettings();
