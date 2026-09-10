@@ -110,7 +110,7 @@ async function api(request,env){ const url=new URL(request.url);
     if(!(await validCookie(request,env.ADMIN_SECRET))) return json({error:'غير مصرح'},401);
     let b; try{b=await request.json()}catch{return json({error:'JSON غير صالح'},400)}
     const kind=String(b.kind||'').trim(), id=Number(b.id), published=b.published?1:0;
-    const c=COLLECTIONS[kind];
+    const c=COLLECTIONS[kind] || (kind==='posts'?{table:'posts'}:null);
     if(!c||!id) return json({error:'بيانات النشر غير صالحة'},400);
     try{
       const r=await env.DB.prepare(`UPDATE ${c.table} SET published=? WHERE id=?`).bind(published,id).run();

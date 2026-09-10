@@ -96,24 +96,25 @@ html[data-admin-theme="dark"] .login-box{background:#141615;color:#f5f4ef;border
 html[data-admin-theme="dark"] .login-box p{color:#aeb2af}
 html[data-admin-theme="dark"] .login-box .field input{background:#0f1110;color:#fff;border-color:#383c39}
 html[data-admin-theme="dark"] .theme-toggle{background:#1b1e1d;color:#fff;border-color:#3a3e3b}
-.theme-toggle{border:1px solid var(--line);background:#fff;color:#111;border-radius:10px;width:42px;height:42px;display:inline-grid;place-items:center;font-size:18px;line-height:1}
+.theme-toggle{border:1px solid var(--line);background:#fff;color:#111;border-radius:11px;width:42px;height:42px;display:inline-grid;place-items:center;font-size:18px;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .theme-toggle:hover{border-color:#aaa}
-.topbar-right{display:flex;align-items:center;gap:9px}
+.topbar-right{display:flex;align-items:center;gap:10px}
 .login-theme{position:absolute;top:22px;right:22px}
 .login-wrap{position:relative}
 .login-box{border:1px solid var(--line)}
 .field input:focus,.field textarea:focus,.field select:focus,.copy-row input:focus,.copy-row textarea:focus,.search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,77,0,.10)}
 
 
-/* v6 dashboard header polish — dashboard only */
-.topbar{direction:ltr;min-height:76px;}
-.topbar-left{display:flex;align-items:center;gap:12px;min-width:0;direction:rtl;}
-.topbar-left>div{min-width:0;}
-.topbar-right{display:flex;align-items:center;gap:10px;direction:ltr;}
-.topbar h1{font-weight:850;line-height:1.15;}
-.topbar p{line-height:1.35;}
-.menu-toggle{flex:0 0 42px;}
-.user-chip{direction:ltr;}
+/* v7 dashboard header polish — dashboard only */
+html[dir="rtl"] .topbar{direction:rtl;min-height:82px;padding:0 28px;border-bottom:1px solid var(--line);}
+html[dir="rtl"] .topbar-left{display:flex;align-items:center;gap:12px;min-width:0;direction:rtl;}
+html[dir="rtl"] .topbar-left>div{min-width:0;}
+html[dir="rtl"] .topbar-right{display:flex;align-items:center;gap:10px;direction:ltr;}
+html[dir="rtl"] .topbar h1{font-weight:850;line-height:1.15;letter-spacing:-.02em;}
+html[dir="rtl"] .topbar p{line-height:1.35;}
+html[dir="rtl"] .menu-toggle{flex:0 0 42px;border-color:#d7d2c8;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+html[data-admin-theme="dark"][dir="rtl"] .menu-toggle{background:#171a19;border-color:#343836;color:#fff;}
+html[dir="rtl"] .user-chip{direction:ltr;padding-left:2px;}
 @media(max-width:1000px){
   .topbar{min-height:68px;padding:10px 12px!important;}
   .topbar-left{gap:9px;}
