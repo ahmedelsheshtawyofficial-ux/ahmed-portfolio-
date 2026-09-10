@@ -1896,7 +1896,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var footer=document.querySelector('body > footer');
     order.forEach(function(k){var el=document.querySelector('body > section[data-cms-section="'+CSS.escape(k)+'"], body > section#'+CSS.escape(k));if(el&&footer)document.body.insertBefore(el,footer);});
   }
-  function renderNav(){document.querySelectorAll('[data-cms-nav]').forEach(function(a){var slug=a.getAttribute('data-cms-nav');var r=cms.navigation.find(function(x){return x.slug===slug;});if(r){a.textContent=lang(r,'label');a.href=r.href;if(r.target)a.target=r.target;}});}
+  function renderNav(){document.querySelectorAll('[data-cms-nav]').forEach(function(a){var slug=a.getAttribute('data-cms-nav');var r=cms.navigation.find(function(x){return x.slug===slug;});if(r){a.style.display=Number(r.published)===0?'none':'';a.textContent=lang(r,'label');a.href=r.href;if(r.target)a.target=r.target;}});}
   var FALLBACK_SERVICES=[
     {title_en:'Financial Analysis',title_ar:'التحليل المالي',desc_en:'Analyzing revenue, expenses, profitability, margins, KPIs and financial performance.',desc_ar:'تحليل الإيرادات والمصروفات والربحية والهوامش ومؤشرات الأداء الرئيسية والأداء المالي العام.'},
     {title_en:'Financial Modeling',title_ar:'النمذجة المالية',desc_en:'Building structured financial models to understand historical performance, forecast results and evaluate business scenarios.',desc_ar:'بناء نماذج مالية منظمة لفهم الأداء التاريخي، والتنبؤ بالنتائج، وتقييم سيناريوهات الأعمال المختلفة.'},
@@ -1913,10 +1913,10 @@ document.addEventListener('DOMContentLoaded', function(){
     var rs=await Promise.all(endpoints.map(function(p){return p.catch(function(e){console.warn(e);return null;});}));
     cms.settings={};
     if(Array.isArray(rs[0])) rs[0].forEach(function(x){cms.settings[x.key]={en:x.en,ar:x.ar};});
-    cms.services=Array.isArray(rs[1])&&rs[1].length?rs[1]:FALLBACK_SERVICES;
+    cms.services=Array.isArray(rs[1])?(rs[1].length?rs[1]:[]):FALLBACK_SERVICES;
     cms.approach=Array.isArray(rs[2])?rs[2]:[];
     cms.skills=Array.isArray(rs[3])?rs[3]:[];
-    cms.certs=Array.isArray(rs[4])&&rs[4].length?rs[4]:FALLBACK_CERTS;
+    cms.certs=Array.isArray(rs[4])?(rs[4].length?rs[4]:[]):FALLBACK_CERTS;
     cms.navigation=Array.isArray(rs[5])?rs[5]:[];
     cms.sections=Array.isArray(rs[6])?rs[6]:[];
     applySettings();
