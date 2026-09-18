@@ -269,6 +269,8 @@ nav{display:flex; align-items:center; justify-content:space-between;}
 @media(max-width:860px){.about-grid{grid-template-columns:1fr; gap:40px;}}
 .about-copy p{color:var(--ink-soft); font-size:16.5px; margin-bottom:16px; max-width:480px;}
 .about-copy p:first-of-type{color:var(--ink); font-size:18px; font-weight:500;}
+.about-links{display:flex;flex-wrap:wrap;gap:14px 20px;margin-top:22px;}
+.about-links .project-link{font-size:13px;text-decoration:none;}
 .info-cards{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
 .info-card{
   background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-md);
@@ -1239,8 +1241,13 @@ html[dir="rtl"] .util-toggles{margin-left:0; margin-right:8px;}
         <h2 style="font-size:clamp(28px,4vw,40px); line-height:1.15; margin-bottom:24px;" data-i18n="about.heading" data-i18n-html>Numbers tell a story.<br><span style="color:var(--accent);">I analyze it.</span></h2>
       </div>
       <div class="about-copy">
-        <p data-i18n="about.p1">I'm an Accounting graduate with a strong interest in financial analysis, financial modeling, and FP&amp;A.</p>
+        <p data-i18n="about.p1">Ahmed Elsheshtawy is a Finance Analyst and FMVA® professional specializing in financial analysis, financial modeling, and FP&amp;A.</p>
         <p data-i18n="about.p2">My focus is not simply on reporting numbers, but on understanding what drives financial performance and turning financial information into useful insights.</p>
+        <div class="about-links" aria-label="Professional profiles and platforms">
+          <a class="project-link" href="https://eg.linkedin.com/in/ahmedelsheshtawyofficial" target="_blank" rel="noopener">LinkedIn ↗</a>
+          <a class="project-link" href="https://credentials.corporatefinanceinstitute.com/c7e4b58e-5e39-432a-b7c1-303a56d34c7c" target="_blank" rel="noopener">CFI FMVA® Credential ↗</a>
+          <a class="project-link" href="https://ahmedel-sheshtawy.github.io/Our-Platforms/" target="_blank" rel="noopener">Our Platforms ↗</a>
+        </div>
       </div>
     </div>
 
