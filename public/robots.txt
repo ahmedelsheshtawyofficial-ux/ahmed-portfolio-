@@ -1,5 +1,8 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /admin.html
+Disallow: /admin
 
 User-agent: LinkedInBot
 Allow: /

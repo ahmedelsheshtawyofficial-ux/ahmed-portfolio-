@@ -69,11 +69,16 @@ async function ensureTables(env){
     for(const x of approach) await env.DB.prepare('INSERT OR IGNORE INTO approach_steps (slug,title_en,title_ar,desc_en,desc_ar,published,sort_order) VALUES (?,?,?,?,?,?,?)').bind(...x).run();
     const skills=[['excel','Excel','Excel','Tools','أدوات','','1',1,1],['financial-modeling','Financial Modeling','النمذجة المالية','Core','أساسي','','',1,2],['financial-analysis','Financial Analysis','التحليل المالي','Core','أساسي','','',1,3],['fpa','FP&A','FP&A','Core','أساسي','','',1,4],['powerpoint','PowerPoint','PowerPoint','Tools','أدوات','','',1,5],['power-bi','Power BI','Power BI','Tools','أدوات','','',1,6],['notion','Notion','Notion','Tools','أدوات','','',1,7]];
     for(const x of skills) await env.DB.prepare('INSERT OR IGNORE INTO skills (slug,name_en,name_ar,category_en,category_ar,level,icon,published,sort_order) VALUES (?,?,?,?,?,?,?,?,?)').bind(...x).run();
-    const certs=[['fmva','FMVA®','FMVA®','Completed','مكتملة','Financial Modeling & Valuation Analyst','محلل النمذجة والتقييم المالي','95%','CFI','','','', '',1,1,1],['fpap','FPAP','FPAP','Currently developing','قيد التطوير حاليًا','Financial Planning & Analysis Professional','أخصائي التخطيط والتحليل المالي','','CFI','','','','',0,1,2],['pmp-diploma','PMP Diploma','دبلومة PMP','30 hours','30 ساعة','Start & Planning','البدء والتخطيط','','','','','','',0,1,3]];
+    const certs=[['fmva','FMVA®','FMVA®','Completed','مكتملة','Financial Modeling & Valuation Analyst','محلل النمذجة والتقييم المالي','95%','CFI','','','https://credentials.corporatefinanceinstitute.com/c7e4b58e-5e39-432a-b7c1-303a56d34c7c','',1,1,1],['fpap','FPAP','FPAP','Currently developing','قيد التطوير حاليًا','Financial Planning & Analysis Professional','أخصائي التخطيط والتحليل المالي','','CFI','','','','',0,1,2],['pmp-diploma','PMP Diploma','دبلومة PMP','30 hours','30 ساعة','Start & Planning','البدء والتخطيط','','','','','','',0,1,3]];
     for(const x of certs) await env.DB.prepare('INSERT OR IGNORE INTO certifications (slug,name_en,name_ar,status_en,status_ar,desc_en,desc_ar,score,provider,date_en,date_ar,credential_url,logo_url,featured,published,sort_order) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)').bind(...x).run();
     const nav=[['home','Home','الرئيسية','#home','',1,1],['about','About','نبذة عني','#about','',1,2],['work','Work','أعمالي','#work','',1,3],['videos','Videos','فيديوهات','#videos','',1,4],['skills','Skills','المهارات','#skills','',1,5],['insights','Insights','رؤى','#insights','',1,6],['contact','Contact','تواصل','#contact','',1,7]];
     for(const x of nav) await env.DB.prepare('INSERT OR IGNORE INTO navigation (slug,label_en,label_ar,href,target,published,sort_order) VALUES (?,?,?,?,?,?,?)').bind(...x).run();
     await env.DB.prepare("INSERT OR REPLACE INTO cms_meta (key,value) VALUES ('seed_v4','1')").run();
+  }
+  const seoCredentialSeed=await env.DB.prepare("SELECT value FROM cms_meta WHERE key='seo_v1'").first();
+  if(!seoCredentialSeed){
+    await env.DB.prepare("UPDATE certifications SET credential_url=? WHERE slug='fmva'").bind('https://credentials.corporatefinanceinstitute.com/c7e4b58e-5e39-432a-b7c1-303a56d34c7c').run();
+    await env.DB.prepare("INSERT OR REPLACE INTO cms_meta (key,value) VALUES ('seo_v1','1')").run();
   }
   // Keep the previous v2 seed behavior for installations upgraded from V3.
   const pCount=await env.DB.prepare('SELECT COUNT(*) AS n FROM projects').first();
