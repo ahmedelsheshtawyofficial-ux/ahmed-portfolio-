@@ -295,13 +295,9 @@ nav{display:flex; align-items:center; justify-content:space-between;}
 #insights .insights-grid-inner{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;width:100%;}
 #insights .insight-card{min-height:250px;height:auto;min-width:0;overflow:hidden;}
 #insights .insight-card h3,#insights .insight-card p{overflow-wrap:anywhere;word-break:normal;}
-#insights .insight-card{display:flex;flex-direction:column;}
-#insights .insight-card h3{flex-grow:0;min-height:0;line-height:1.4;margin:0 0 12px;}
-#insights .insight-card p{flex-grow:0;min-height:0;line-height:1.65;margin:0;}
-#insights .insight-card .insight-meta{margin-top:auto;}
 #insights .insight-meta{gap:12px;flex-wrap:wrap;}
 @media(max-width:900px){#work .projects-cms-grid{grid-template-columns:1fr 1fr;}#insights .insights-grid-inner{grid-template-columns:1fr;gap:12px;}}
-@media(max-width:650px){#work .projects-cms-grid{grid-template-columns:1fr;}#insights .insights-grid-inner{grid-template-columns:1fr;gap:12px;}#insights .insight-card{padding:22px;min-height:0;}#insights .insight-card h3{font-size:19px;line-height:1.35;margin-bottom:10px;}#insights .insight-card p{font-size:13.5px;line-height:1.65;margin:0;}#insights .insight-meta{font-size:12px;align-items:flex-start;}}
+@media(max-width:650px){#work .projects-cms-grid{grid-template-columns:1fr;}#insights .insights-grid-inner{grid-template-columns:1fr;gap:12px;}#insights .insight-card{padding:22px;min-height:0;}#insights .insight-card h3{font-size:19px;line-height:1.35;}#insights .insight-card p{font-size:13.5px;line-height:1.65;}#insights .insight-meta{font-size:12px;align-items:flex-start;}}
 
 /* ============ WHAT I DO ============ */
 .services-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:var(--radius-md); overflow:hidden;}
@@ -434,8 +430,8 @@ nav{display:flex; align-items:center; justify-content:space-between;}
 .insight-card{border:1px solid var(--line); border-radius:var(--radius-md); padding:26px; background:var(--white); display:flex; flex-direction:column; height:100%; transition:border-color .2s;}
 .insight-card:hover{border-color:var(--ink);}
 .insight-cat{font-family:var(--mono); font-size:11px; color:var(--accent); text-transform:uppercase; margin-bottom:14px;}
-.insight-card h3{font-size:17px; margin:0 0 12px; flex-grow:0; min-height:0; line-height:1.45;}
-.insight-card p{color:var(--ink-soft); font-size:13.5px; line-height:1.65; margin:0;}
+.insight-card h3{font-size:17px; margin-bottom:10px; flex-grow:1;}
+.insight-card p{color:var(--ink-soft); font-size:13.5px; margin-bottom:18px;}
 .insight-meta{display:flex; justify-content:space-between; align-items:center; font-size:12.5px; color:var(--ink-faint); border-top:1px solid var(--line); padding-top:14px;}
 .insight-meta a{font-weight:600; color:var(--ink);}
 .insights-cta{text-align:center; margin-top:44px;}
@@ -738,9 +734,36 @@ section{padding:120px 0;}
 .insight-card{background:#f4f2ec;border:1px solid #d4d0c6;border-radius:17px;padding:27px;min-height:250px;transition:transform .3s,background .3s,border-color .3s;}
 .insight-card:hover{transform:translateY(-5px);background:#fff;border-color:#bbb6aa;}
 .insight-cat{color:var(--accent);}
-.insight-card h3{font-size:21px;line-height:1.4;letter-spacing:-.03em;flex-grow:0;min-height:0;margin:0 0 12px;}
-.insight-card p{line-height:1.65;margin:0;}
-.insight-card .insight-meta{margin-top:auto;border-color:#d4d0c6;}
+.insight-card h3{font-size:21px;letter-spacing:-.03em;}
+.insight-meta{border-color:#d4d0c6;}
+
+
+/* ============ COMMUNITY IMPACT ============ */
+#community-impact{background:var(--surface);display:none;}
+#community-impact .section-head{max-width:780px;}
+.community-intro{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:56px;align-items:end;margin-bottom:42px;}
+.community-intro .section-head{margin-bottom:0;}
+.community-intro-copy{color:var(--ink-soft);font-size:16px;line-height:1.75;max-width:500px;justify-self:end;}
+.community-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+.community-card{background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:30px;min-height:285px;display:flex;flex-direction:column;transition:transform .25s,background .25s,border-color .25s;}
+.community-card:hover{transform:translateY(-4px);background:var(--surface-2);border-color:var(--accent);}
+.community-card .num{font:500 12px var(--mono);color:var(--accent);margin-bottom:28px;}
+.community-card .tag{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:12px;}
+.community-card h3{font-size:26px;line-height:1.15;margin-bottom:14px;}
+.community-card p{color:var(--ink-soft);font-size:14.5px;line-height:1.7;max-width:560px;}
+.community-card .community-link{margin-top:auto;padding-top:28px;display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:600;color:var(--ink);width:max-content;border-bottom:1px solid var(--accent);padding-bottom:5px;}
+.community-note{margin-top:14px;border:1px solid var(--line);border-radius:18px;padding:22px 26px;background:var(--bg);color:var(--ink-soft);font-size:14px;line-height:1.7;}
+.community-note strong{color:var(--ink);font-weight:600;}
+html[dir="rtl"] .community-intro-copy{justify-self:start;}
+html[dir="rtl"] .community-card .tag{text-transform:none;letter-spacing:normal;}
+@media(max-width:850px){
+  .community-intro{grid-template-columns:1fr;gap:18px;}
+  .community-intro-copy{justify-self:start;}
+  .community-grid{grid-template-columns:1fr;}
+}
+[data-theme="dark"] #community-impact{background:#111 !important;}
+[data-theme="dark"] .community-card,[data-theme="dark"] .community-note{background:var(--surface);border-color:var(--line);}
+[data-theme="dark"] .community-card:hover{background:var(--surface-2);border-color:var(--accent);}
 
 /* Brand statement */
 .brand-statement{background:#050505;color:#fff;padding:160px 0;overflow:hidden;position:relative;}
@@ -1049,33 +1072,6 @@ html[dir="rtl"] .util-toggles{margin-left:0; margin-right:8px;}
 @media(max-width:900px){.cms-managed-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media(max-width:900px){.cms-managed-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.cms-skills-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media(max-width:650px){.cms-managed-grid{grid-template-columns:1fr;}.cms-skills-grid{grid-template-columns:1fr 1fr;}}
-
-
-/* Community Impact — hidden by default; controlled from Admin > Brand / Assets / Effects */
-.community-impact-section{display:none;background:#111;color:#fff;position:relative;overflow:hidden;}
-.community-impact-section::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 85% 15%,rgba(255,77,0,.13),transparent 32%);pointer-events:none;}
-.community-impact-section .wrap{position:relative;z-index:1;}
-.community-impact-intro{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(280px,.75fr);gap:64px;align-items:end;margin-bottom:46px;}
-.community-impact-section .eyebrow{color:var(--accent);}
-.community-impact-section h2{color:#fff;max-width:760px;margin:0;}
-.community-impact-lead{color:rgba(255,255,255,.68);font-size:17px;line-height:1.75;margin:0;max-width:560px;}
-.community-impact-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;}
-.community-impact-card{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.045);border-radius:22px;padding:28px;display:grid;grid-template-columns:auto 1fr;gap:24px;min-height:290px;transition:transform .25s,border-color .25s,background .25s;}
-.community-impact-card:hover{transform:translateY(-4px);border-color:rgba(255,77,0,.6);background:rgba(255,255,255,.065);}
-.community-impact-number{font-family:var(--mono);font-size:13px;color:var(--accent);padding-top:4px;}
-.community-impact-card-body{display:flex;flex-direction:column;height:100%;}
-.community-impact-kicker{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.52);margin-bottom:14px;}
-.community-impact-card h3{font-size:26px;letter-spacing:-.03em;color:#fff;margin:0 0 12px;}
-.community-impact-card p{color:rgba(255,255,255,.66);font-size:14px;line-height:1.75;margin:0 0 24px;}
-.community-impact-link{margin-top:auto;color:#fff;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:5px;width:max-content;border-bottom:1px solid rgba(255,77,0,.65);padding-bottom:5px;}
-.community-impact-link:hover{color:var(--accent);}
-.community-impact-note{display:flex;gap:16px;align-items:flex-start;margin-top:28px;padding:22px 24px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(255,255,255,.025);}
-.community-impact-note-mark{color:var(--accent);font-size:18px;line-height:1;}
-.community-impact-note p{color:rgba(255,255,255,.58);font-size:13px;line-height:1.75;margin:0;max-width:900px;}
-html[dir="rtl"] .community-impact-card{text-align:right;}
-html[dir="rtl"] .community-impact-intro{direction:rtl;}
-@media(max-width:850px){.community-impact-intro{grid-template-columns:1fr;gap:22px;}.community-impact-grid{grid-template-columns:1fr;}}
-@media(max-width:560px){.community-impact-card{grid-template-columns:1fr;gap:12px;padding:23px;min-height:0;}.community-impact-card h3{font-size:23px;}.community-impact-lead{font-size:15px;}.community-impact-note{padding:18px;}}
 
 /* CMS custom sections + reorder support */
 .cms-custom-section{position:relative;overflow:hidden;}
@@ -1388,48 +1384,37 @@ html[dir="rtl"] .community-impact-intro{direction:rtl;}
   </div>
 </section>
 
+<!-- BRAND STATEMENT -->
 
-<!-- COMMUNITY IMPACT -->
-<section id="community-impact" class="community-impact-section" data-cms-section="community-impact" aria-labelledby="community-impact-title">
+<section id="community-impact" data-cms-section="community-impact" aria-labelledby="community-impact-title">
   <div class="wrap">
-    <div class="community-impact-intro reveal">
-      <div>
-        <p class="eyebrow" data-i18n="community.eyebrow">Community Impact</p>
-        <h2 id="community-impact-title" data-i18n="community.heading">Leaving a useful mark on the professional community.</h2>
+    <div class="community-intro">
+      <div class="section-head">
+        <p class="eyebrow">Community Impact</p>
+        <h2 id="community-impact-title">Leaving a useful mark on the professional community.</h2>
       </div>
-      <p class="community-impact-lead" data-i18n="community.lead">I believe professional growth becomes more meaningful when knowledge, practice, and opportunities are shared with others who are starting their journey.</p>
+      <p class="community-intro-copy">I believe professional growth becomes more meaningful when knowledge, practice, and opportunities are shared with people who are starting their journey.</p>
     </div>
-
-    <div class="community-impact-grid">
-      <article class="community-impact-card reveal">
-        <div class="community-impact-number">01</div>
-        <div class="community-impact-card-body">
-          <span class="community-impact-kicker" data-i18n="community.case.kicker">Practical Learning</span>
-          <h3 data-i18n="community.case.title">Case Lab</h3>
-          <p data-i18n="community.case.desc">A practical space for finance case studies and applied exercises, created for learners who may not easily find structured real-world practice and free learning resources.</p>
-          <a class="community-impact-link" href="https://case-lab.pages.dev/" target="_blank" rel="noopener" data-i18n="community.case.link">Explore Case Lab ↗</a>
-        </div>
+    <div class="community-grid">
+      <article class="community-card">
+        <span class="num">01</span>
+        <span class="tag">Practical Learning</span>
+        <h3>Case Lab</h3>
+        <p>A practical space for finance case studies and applied exercises, created for learners who may not easily find structured real-world practice and free learning resources.</p>
+        <a class="community-link" href="https://case-lab.pages.dev/" target="_blank" rel="noopener">Explore Case Lab ↗</a>
       </article>
-
-      <article class="community-impact-card reveal">
-        <div class="community-impact-number">02</div>
-        <div class="community-impact-card-body">
-          <span class="community-impact-kicker" data-i18n="community.exam.kicker">Assessment & Achievement</span>
-          <h3 data-i18n="community.exam.title">Finance Exam Platform</h3>
-          <p data-i18n="community.exam.desc">An assessment platform that helps learners test their understanding, evaluate practical skills, take exams based on free resources, and earn an achievement certificate when they complete the required assessment.</p>
-          <a class="community-impact-link" href="https://ahmed-finance-exam.ahmedelsheshtawy-training.workers.dev/" target="_blank" rel="noopener" data-i18n="community.exam.link">Explore the Exam Platform ↗</a>
-        </div>
+      <article class="community-card">
+        <span class="num">02</span>
+        <span class="tag">Assessment &amp; Achievement</span>
+        <h3>Finance Exam Platform</h3>
+        <p>An assessment platform that helps learners test their understanding, evaluate practical skills, take exams based on free resources, and earn an achievement certificate when they complete the required assessment.</p>
+        <a class="community-link" href="https://ahmed-finance-exam.ahmedelsheshtawy-training.workers.dev/" target="_blank" rel="noopener">Explore the Exam Platform ↗</a>
       </article>
     </div>
-
-    <div class="community-impact-note reveal">
-      <span class="community-impact-note-mark">↗</span>
-      <p data-i18n="community.note">The goal is simple: make useful learning resources easier to access, create a way to practice and measure progress, and leave something that can help the next person move forward.</p>
-    </div>
+    <div class="community-note"><strong>The goal is simple:</strong> make useful learning resources easier to access, create a way to practice and measure progress, and leave something that can help the next person move forward.</div>
   </div>
 </section>
 
-<!-- BRAND STATEMENT -->
 <section class="brand-statement" data-cms-section="brand">
   <div class="wrap">
     <h2 class="reveal" data-i18n="brandstatement.heading">Numbers tell a story. I analyze it.</h2>
@@ -1973,7 +1958,6 @@ document.addEventListener('DOMContentLoaded', function(){
     var desc=getSetting('site.meta_description');if(desc){var md=document.querySelector('meta[name="description"]')||document.createElement('meta');md.name='description';md.content=desc;if(!md.parentNode)document.head.appendChild(md);}
     var accent=getSetting('site.accent_color');if(accent)document.documentElement.style.setProperty('--accent',accent);
     document.documentElement.classList.toggle('effects-off',getSetting('site.effects_enabled')==='0');
-    var community=document.getElementById('community-impact');if(community)community.style.display=getSetting('community.impact.visible')==='1'?'block':'none';
     ['brand','loader'].forEach(function(kind){
       var text=getSetting('site.'+(kind==='brand'?'brand_mark':'loader_mark'))||'AE';
       var logo=getSetting('site.'+(kind==='brand'?'brand_logo_url':'loader_logo_url'));
@@ -1990,12 +1974,13 @@ document.addEventListener('DOMContentLoaded', function(){
       });
     });
     var cta=document.querySelector('[data-cms-insights-cta]');if(cta){var cu=getSetting('insights.cta_url');var cv=getSetting('insights.cta_visible')!=='0';cta.href=cu||'#';cta.style.display=cv&&cu?'inline-flex':'none';}
+    var community=document.getElementById('community-impact');if(community){community.style.display=getSetting('community.impact.visible')==='1'?'block':'none';}
   }
   function renderServices(){var c=document.getElementById('servicesContainer');if(!c)return;c.innerHTML=cms.services.map(function(r,i){return '<div class="service-card"><div class="service-num">'+String(i+1).padStart(2,'0')+'</div><div class="service-content"><h3>'+esc(lang(r,'title'))+'</h3><p>'+esc(lang(r,'desc'))+'</p></div><div class="service-arrow"><span class="icon-arrow">↗</span></div></div>';}).join('');}
   function renderApproach(){var c=document.getElementById('approachContainer');if(!c)return;c.innerHTML=cms.approach.map(function(r,i){return '<div class="approach-item"><span class="approach-num">'+String(i+1).padStart(2,'0')+'</span><div><h3>'+esc(lang(r,'title'))+'</h3><p>'+esc(lang(r,'desc'))+'</p></div></div>';}).join('');}
   function renderSkills(){var c=document.getElementById('skillsContainer');if(!c)return;c.innerHTML=cms.skills.map(function(r){return '<div class="tool-chip"><span class="dot"></span>'+esc(lang(r,'name'))+'</div>';}).join('');}
   function renderCerts(){var c=document.getElementById('certsContainer');if(!c)return;c.innerHTML=cms.certs.map(function(r){var done=String(r.status_en||'').toLowerCase().indexOf('completed')>=0;var featured=Number(r.featured)===1;var status=esc(lang(r,'status'));var name=esc(lang(r,'name'));var bg=r.logo_url?'<span class="cert-bg" aria-hidden="true" style="background-image:url(&quot;'+esc(r.logo_url)+'&quot;)"></span>':'';return '<div class="cert-card '+(featured?'featured ':'')+(done?'done':'')+'" data-watermark="'+name+'">'+bg+'<span class="cert-status '+(done?'done':'dev')+'">'+status+'</span><h3>'+name+(r.score?' <span class="cert-score">'+esc(r.score)+'</span>':'')+'</h3><p>'+esc(lang(r,'desc'))+'</p>'+(r.provider?'<small>'+esc(r.provider)+'</small>':'')+(r.credential_url?'<a class="project-link" href="'+esc(r.credential_url)+'" target="_blank" rel="noopener">Credential ↗</a>':'')+'</div>';}).join('');}
-  var BUILTIN_SECTION_ORDER=['home','about','what-i-do','work','videos','approach','skills','certs','insights','brand','contact'];
+  var BUILTIN_SECTION_ORDER=['home','about','what-i-do','work','videos','approach','skills','certs','insights','community-impact','brand','contact'];
   function sectionKey(el){return el.getAttribute('data-cms-section')||el.id||'';}
   function renderCustomSections(){
     document.querySelectorAll('section.cms-custom-section').forEach(function(el){el.remove();});
