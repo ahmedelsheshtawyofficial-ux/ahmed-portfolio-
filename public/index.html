@@ -430,7 +430,7 @@ nav{display:flex; align-items:center; justify-content:space-between;}
 .insight-card{border:1px solid var(--line); border-radius:var(--radius-md); padding:26px; background:var(--white); display:flex; flex-direction:column; height:100%; transition:border-color .2s;}
 .insight-card:hover{border-color:var(--ink);}
 .insight-cat{font-family:var(--mono); font-size:11px; color:var(--accent); text-transform:uppercase; margin-bottom:14px;}
-.insight-card h3{font-size:17px; margin-bottom:10px; flex-grow:1;}
+.insight-card h3{font-size:17px; margin-bottom:10px; flex-grow:0;}
 .insight-card p{color:var(--ink-soft); font-size:13.5px; margin-bottom:18px;}
 .insight-meta{display:flex; justify-content:space-between; align-items:center; font-size:12.5px; color:var(--ink-faint); border-top:1px solid var(--line); padding-top:14px;}
 .insight-meta a{font-weight:600; color:var(--ink);}
@@ -727,11 +727,52 @@ section{padding:120px 0;}
 /* Insights */
 #insights{background:#e9e6dd!important;}
 .insights-grid{grid-template-columns:repeat(3,1fr);gap:12px;}
-.insight-card{background:#f4f2ec;border:1px solid #d4d0c6;border-radius:17px;padding:27px;min-height:250px;transition:transform .3s,background .3s,border-color .3s;}
+/* Finance Insights — balanced card layout */
+.insight-card{
+  background:#f4f2ec;
+  border:1px solid #d4d0c6;
+  border-radius:17px;
+  padding:27px;
+  min-height:250px;
+  display:flex;
+  flex-direction:column;
+  transition:transform .3s,background .3s,border-color .3s;
+  min-width:0;
+}
 .insight-card:hover{transform:translateY(-5px);background:#fff;border-color:#bbb6aa;}
-.insight-cat{color:var(--accent);}
-.insight-card h3{font-size:21px;letter-spacing:-.03em;}
-.insight-meta{border-color:#d4d0c6;}
+.insight-cat{
+  color:var(--accent);
+  flex:0 0 auto;
+  line-height:1.45;
+  min-height:32px;
+}
+.insight-card h3{
+  font-size:21px;
+  line-height:1.4;
+  letter-spacing:-.03em;
+  margin:0 0 12px;
+  min-height:59px;
+  flex:0 0 auto;
+  overflow-wrap:anywhere;
+}
+.insight-card p{
+  color:var(--ink-soft);
+  font-size:13.5px;
+  line-height:1.65;
+  margin:0 0 18px;
+  flex:1 1 auto;
+  overflow-wrap:anywhere;
+}
+.insight-meta{
+  border-color:#d4d0c6;
+  flex:0 0 auto;
+}
+
+@media(max-width:650px){
+  .insight-card{padding:22px;min-height:0;}
+  .insight-card h3{font-size:19px;line-height:1.35;min-height:51px;margin-bottom:10px;}
+  .insight-card p{font-size:13.5px;line-height:1.65;margin-bottom:18px;}
+}
 
 /* Brand statement */
 .brand-statement{background:#050505;color:#fff;padding:160px 0;overflow:hidden;position:relative;}
