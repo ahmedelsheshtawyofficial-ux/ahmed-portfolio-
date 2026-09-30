@@ -430,7 +430,7 @@ nav{display:flex; align-items:center; justify-content:space-between;}
 .insight-card{border:1px solid var(--line); border-radius:var(--radius-md); padding:26px; background:var(--white); display:flex; flex-direction:column; height:100%; transition:border-color .2s;}
 .insight-card:hover{border-color:var(--ink);}
 .insight-cat{font-family:var(--mono); font-size:11px; color:var(--accent); text-transform:uppercase; margin-bottom:14px;}
-.insight-card h3{font-size:17px; margin-bottom:10px; flex-grow:1;}
+.insight-card h3{font-size:17px; margin-bottom:10px; flex-grow:0;}
 .insight-card p{color:var(--ink-soft); font-size:13.5px; margin-bottom:18px;}
 .insight-meta{display:flex; justify-content:space-between; align-items:center; font-size:12.5px; color:var(--ink-faint); border-top:1px solid var(--line); padding-top:14px;}
 .insight-meta a{font-weight:600; color:var(--ink);}
@@ -727,40 +727,52 @@ section{padding:120px 0;}
 /* Insights */
 #insights{background:#e9e6dd!important;}
 .insights-grid{grid-template-columns:repeat(3,1fr);gap:12px;}
-.insight-card{background:#f4f2ec;border:1px solid #d4d0c6;border-radius:17px;padding:27px;min-height:250px;transition:transform .3s,background .3s,border-color .3s;}
-.insight-card:hover{transform:translateY(-5px);background:#fff;border-color:#bbb6aa;}
-.insight-cat{color:var(--accent);}
-.insight-card h3{font-size:21px;letter-spacing:-.03em;}
-.insight-meta{border-color:#d4d0c6;}
-
-
-/* ============ COMMUNITY IMPACT ============ */
-#community-impact{background:var(--bg);}
-#community-impact .community-intro{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:56px;align-items:end;margin-bottom:42px;}
-#community-impact .community-intro .section-head{margin-bottom:0;}
-#community-impact .community-intro-copy{color:var(--ink-soft);font-size:16px;line-height:1.75;max-width:500px;justify-self:end;}
-#community-impact .community-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
-#community-impact .community-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius-md);padding:30px;min-height:285px;display:flex;flex-direction:column;transition:transform .25s,background .25s,border-color .25s;}
-#community-impact .community-card:hover{transform:translateY(-4px);background:var(--surface);border-color:var(--accent);}
-#community-impact .community-card .num{font:500 12px var(--mono);color:var(--accent);margin-bottom:28px;}
-#community-impact .community-card .tag{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:12px;}
-#community-impact .community-card h3{font-size:26px;line-height:1.15;margin-bottom:14px;}
-#community-impact .community-card p{color:var(--ink-soft);font-size:14.5px;line-height:1.7;max-width:560px;}
-#community-impact .community-link{margin-top:auto;padding-top:28px;display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:600;color:var(--ink);width:max-content;border-bottom:1px solid var(--accent);padding-bottom:5px;}
-#community-impact .community-note{margin-top:14px;border:1px solid var(--line);border-radius:var(--radius-md);padding:22px 26px;background:#fff;color:var(--ink-soft);font-size:14px;line-height:1.7;}
-#community-impact .community-note strong{color:var(--ink);font-weight:600;}
-html[dir="rtl"] #community-impact .community-intro-copy{justify-self:start;}
-html[dir="rtl"] #community-impact .community-card .tag{text-transform:none;letter-spacing:normal;}
-@media(max-width:850px){
-  #community-impact .community-intro{grid-template-columns:1fr;gap:18px;}
-  #community-impact .community-intro-copy{justify-self:start;}
-  #community-impact .community-grid{grid-template-columns:1fr;}
+/* Finance Insights — balanced card layout */
+.insight-card{
+  background:#f4f2ec;
+  border:1px solid #d4d0c6;
+  border-radius:17px;
+  padding:27px;
+  min-height:250px;
+  display:flex;
+  flex-direction:column;
+  transition:transform .3s,background .3s,border-color .3s;
+  min-width:0;
 }
-/* Keep the portfolio's dark-mode system intact; the section itself stays light by design. */
-[data-theme="dark"] #community-impact{background:#fff !important;color:#15181A;}
-[data-theme="dark"] #community-impact .community-card,[data-theme="dark"] #community-impact .community-note{background:#fff;border-color:#DDD8CC;}
-[data-theme="dark"] #community-impact .community-card h3,[data-theme="dark"] #community-impact .community-link,[data-theme="dark"] #community-impact .community-note strong{color:#15181A;}
-[data-theme="dark"] #community-impact .community-intro-copy,[data-theme="dark"] #community-impact .community-card p,[data-theme="dark"] #community-impact .community-note{color:#565C5E;}
+.insight-card:hover{transform:translateY(-5px);background:#fff;border-color:#bbb6aa;}
+.insight-cat{
+  color:var(--accent);
+  flex:0 0 auto;
+  line-height:1.45;
+  min-height:32px;
+}
+.insight-card h3{
+  font-size:21px;
+  line-height:1.4;
+  letter-spacing:-.03em;
+  margin:0 0 12px;
+  min-height:59px;
+  flex:0 0 auto;
+  overflow-wrap:anywhere;
+}
+.insight-card p{
+  color:var(--ink-soft);
+  font-size:13.5px;
+  line-height:1.65;
+  margin:0 0 18px;
+  flex:1 1 auto;
+  overflow-wrap:anywhere;
+}
+.insight-meta{
+  border-color:#d4d0c6;
+  flex:0 0 auto;
+}
+
+@media(max-width:650px){
+  .insight-card{padding:22px;min-height:0;}
+  .insight-card h3{font-size:19px;line-height:1.35;min-height:51px;margin-bottom:10px;}
+  .insight-card p{font-size:13.5px;line-height:1.65;margin-bottom:18px;}
+}
 
 /* Brand statement */
 .brand-statement{background:#050505;color:#fff;padding:160px 0;overflow:hidden;position:relative;}
@@ -1319,37 +1331,6 @@ html[dir="rtl"] .util-toggles{margin-left:0; margin-right:8px;}
     </div>
 
     <div id="projectsContainer" class="projects-cms-grid"></div>
-  </div>
-</section>
-
-
-<!-- COMMUNITY IMPACT -->
-<section id="community-impact" data-cms-section="community-impact" aria-labelledby="community-impact-title">
-  <div class="wrap">
-    <div class="community-intro">
-      <div class="section-head reveal">
-        <p class="eyebrow">Community Impact</p>
-        <h2 id="community-impact-title">Leaving a useful mark on the professional community.</h2>
-      </div>
-      <p class="community-intro-copy reveal">I believe professional growth becomes more meaningful when knowledge, practice, and opportunities are shared with people who are starting their journey.</p>
-    </div>
-    <div class="community-grid">
-      <article class="community-card reveal">
-        <span class="num">01</span>
-        <span class="tag">Practical Learning</span>
-        <h3>Case Lab</h3>
-        <p>A practical space for finance case studies and applied exercises, created for learners who may not easily find structured real-world practice and free learning resources.</p>
-        <a class="community-link" href="https://case-lab.pages.dev/" target="_blank" rel="noopener">Explore Case Lab ↗</a>
-      </article>
-      <article class="community-card reveal">
-        <span class="num">02</span>
-        <span class="tag">Assessment &amp; Achievement</span>
-        <h3>Finance Exam Platform</h3>
-        <p>An assessment platform that helps learners test their understanding, evaluate practical skills, take exams based on free resources, and earn an achievement certificate when they complete the required assessment.</p>
-        <a class="community-link" href="https://ahmed-finance-exam.ahmedelsheshtawy-training.workers.dev/" target="_blank" rel="noopener">Explore the Exam Platform ↗</a>
-      </article>
-    </div>
-    <div class="community-note reveal"><strong>The goal is simple:</strong> make useful learning resources easier to access, create a way to practice and measure progress, and leave something that can help the next person move forward.</div>
   </div>
 </section>
 
