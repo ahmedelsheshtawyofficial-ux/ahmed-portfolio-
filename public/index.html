@@ -295,9 +295,13 @@ nav{display:flex; align-items:center; justify-content:space-between;}
 #insights .insights-grid-inner{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;width:100%;}
 #insights .insight-card{min-height:250px;height:auto;min-width:0;overflow:hidden;}
 #insights .insight-card h3,#insights .insight-card p{overflow-wrap:anywhere;word-break:normal;}
+#insights .insight-card{display:flex;flex-direction:column;}
+#insights .insight-card h3{flex-grow:0;min-height:0;line-height:1.4;margin:0 0 12px;}
+#insights .insight-card p{flex-grow:0;min-height:0;line-height:1.65;margin:0;}
+#insights .insight-card .insight-meta{margin-top:auto;}
 #insights .insight-meta{gap:12px;flex-wrap:wrap;}
 @media(max-width:900px){#work .projects-cms-grid{grid-template-columns:1fr 1fr;}#insights .insights-grid-inner{grid-template-columns:1fr;gap:12px;}}
-@media(max-width:650px){#work .projects-cms-grid{grid-template-columns:1fr;}#insights .insights-grid-inner{grid-template-columns:1fr;gap:12px;}#insights .insight-card{padding:22px;min-height:0;}#insights .insight-card h3{font-size:19px;line-height:1.35;}#insights .insight-card p{font-size:13.5px;line-height:1.65;}#insights .insight-meta{font-size:12px;align-items:flex-start;}}
+@media(max-width:650px){#work .projects-cms-grid{grid-template-columns:1fr;}#insights .insights-grid-inner{grid-template-columns:1fr;gap:12px;}#insights .insight-card{padding:22px;min-height:0;}#insights .insight-card h3{font-size:19px;line-height:1.35;margin-bottom:10px;}#insights .insight-card p{font-size:13.5px;line-height:1.65;margin:0;}#insights .insight-meta{font-size:12px;align-items:flex-start;}}
 
 /* ============ WHAT I DO ============ */
 .services-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:var(--radius-md); overflow:hidden;}
@@ -430,8 +434,8 @@ nav{display:flex; align-items:center; justify-content:space-between;}
 .insight-card{border:1px solid var(--line); border-radius:var(--radius-md); padding:26px; background:var(--white); display:flex; flex-direction:column; height:100%; transition:border-color .2s;}
 .insight-card:hover{border-color:var(--ink);}
 .insight-cat{font-family:var(--mono); font-size:11px; color:var(--accent); text-transform:uppercase; margin-bottom:14px;}
-.insight-card h3{font-size:17px; margin-bottom:10px; flex-grow:0;}
-.insight-card p{color:var(--ink-soft); font-size:13.5px; margin-bottom:18px;}
+.insight-card h3{font-size:17px; margin:0 0 12px; flex-grow:0; min-height:0; line-height:1.45;}
+.insight-card p{color:var(--ink-soft); font-size:13.5px; line-height:1.65; margin:0;}
 .insight-meta{display:flex; justify-content:space-between; align-items:center; font-size:12.5px; color:var(--ink-faint); border-top:1px solid var(--line); padding-top:14px;}
 .insight-meta a{font-weight:600; color:var(--ink);}
 .insights-cta{text-align:center; margin-top:44px;}
@@ -727,52 +731,12 @@ section{padding:120px 0;}
 /* Insights */
 #insights{background:#e9e6dd!important;}
 .insights-grid{grid-template-columns:repeat(3,1fr);gap:12px;}
-/* Finance Insights — balanced card layout */
-.insight-card{
-  background:#f4f2ec;
-  border:1px solid #d4d0c6;
-  border-radius:17px;
-  padding:27px;
-  min-height:250px;
-  display:flex;
-  flex-direction:column;
-  transition:transform .3s,background .3s,border-color .3s;
-  min-width:0;
-}
+.insight-card{background:#f4f2ec;border:1px solid #d4d0c6;border-radius:17px;padding:27px;min-height:250px;transition:transform .3s,background .3s,border-color .3s;}
 .insight-card:hover{transform:translateY(-5px);background:#fff;border-color:#bbb6aa;}
-.insight-cat{
-  color:var(--accent);
-  flex:0 0 auto;
-  line-height:1.45;
-  min-height:32px;
-}
-.insight-card h3{
-  font-size:21px;
-  line-height:1.4;
-  letter-spacing:-.03em;
-  margin:0 0 12px;
-  min-height:59px;
-  flex:0 0 auto;
-  overflow-wrap:anywhere;
-}
-.insight-card p{
-  color:var(--ink-soft);
-  font-size:13.5px;
-  line-height:1.65;
-  margin:0 0 18px;
-  flex:1 1 auto;
-  overflow-wrap:anywhere;
-}
-.insight-meta{
-  border-color:#d4d0c6;
-  flex:0 0 auto;
-}
-
-@media(max-width:650px){
-  .insight-card{padding:22px;min-height:0;}
-  .insight-card h3{font-size:19px;line-height:1.35;min-height:51px;margin-bottom:10px;}
-  .insight-card p{font-size:13.5px;line-height:1.65;margin-bottom:18px;}
-}
+.insight-cat{color:var(--accent);}
+.insight-card h3{font-size:21px;line-height:1.4;letter-spacing:-.03em;flex-grow:0;min-height:0;margin:0 0 12px;}
+.insight-card p{line-height:1.65;margin:0;}
+.insight-card .insight-meta{margin-top:auto;border-color:#d4d0c6;}
 
 /* Brand statement */
 .brand-statement{background:#050505;color:#fff;padding:160px 0;overflow:hidden;position:relative;}
@@ -1083,6 +1047,33 @@ html[dir="rtl"] .util-toggles{margin-left:0; margin-right:8px;}
 @media(max-width:900px){.cms-managed-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.cms-skills-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media(max-width:650px){.cms-managed-grid{grid-template-columns:1fr;}.cms-skills-grid{grid-template-columns:1fr 1fr;}}
 
+
+/* Community Impact — hidden by default; controlled from Admin > Brand / Assets / Effects */
+.community-impact-section{display:none;background:#111;color:#fff;position:relative;overflow:hidden;}
+.community-impact-section::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 85% 15%,rgba(255,77,0,.13),transparent 32%);pointer-events:none;}
+.community-impact-section .wrap{position:relative;z-index:1;}
+.community-impact-intro{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(280px,.75fr);gap:64px;align-items:end;margin-bottom:46px;}
+.community-impact-section .eyebrow{color:var(--accent);}
+.community-impact-section h2{color:#fff;max-width:760px;margin:0;}
+.community-impact-lead{color:rgba(255,255,255,.68);font-size:17px;line-height:1.75;margin:0;max-width:560px;}
+.community-impact-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;}
+.community-impact-card{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.045);border-radius:22px;padding:28px;display:grid;grid-template-columns:auto 1fr;gap:24px;min-height:290px;transition:transform .25s,border-color .25s,background .25s;}
+.community-impact-card:hover{transform:translateY(-4px);border-color:rgba(255,77,0,.6);background:rgba(255,255,255,.065);}
+.community-impact-number{font-family:var(--mono);font-size:13px;color:var(--accent);padding-top:4px;}
+.community-impact-card-body{display:flex;flex-direction:column;height:100%;}
+.community-impact-kicker{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.52);margin-bottom:14px;}
+.community-impact-card h3{font-size:26px;letter-spacing:-.03em;color:#fff;margin:0 0 12px;}
+.community-impact-card p{color:rgba(255,255,255,.66);font-size:14px;line-height:1.75;margin:0 0 24px;}
+.community-impact-link{margin-top:auto;color:#fff;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:5px;width:max-content;border-bottom:1px solid rgba(255,77,0,.65);padding-bottom:5px;}
+.community-impact-link:hover{color:var(--accent);}
+.community-impact-note{display:flex;gap:16px;align-items:flex-start;margin-top:28px;padding:22px 24px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(255,255,255,.025);}
+.community-impact-note-mark{color:var(--accent);font-size:18px;line-height:1;}
+.community-impact-note p{color:rgba(255,255,255,.58);font-size:13px;line-height:1.75;margin:0;max-width:900px;}
+html[dir="rtl"] .community-impact-card{text-align:right;}
+html[dir="rtl"] .community-impact-intro{direction:rtl;}
+@media(max-width:850px){.community-impact-intro{grid-template-columns:1fr;gap:22px;}.community-impact-grid{grid-template-columns:1fr;}}
+@media(max-width:560px){.community-impact-card{grid-template-columns:1fr;gap:12px;padding:23px;min-height:0;}.community-impact-card h3{font-size:23px;}.community-impact-lead{font-size:15px;}.community-impact-note{padding:18px;}}
+
 /* CMS custom sections + reorder support */
 .cms-custom-section{position:relative;overflow:hidden;}
 .cms-custom-section.cms-bg-surface{background:var(--surface);}
@@ -1391,6 +1382,47 @@ html[dir="rtl"] .util-toggles{margin-left:0; margin-right:8px;}
       <div id="insightsContainer" class="insights-grid-inner"></div>
     </div>
     <div class="insights-cta reveal"><a href="https://linkedin.com/in/ahmedelsheshtawyofficial/" data-cms-insights-cta class="btn-secondary"><span data-i18n="insights.cta">View More on LinkedIn</span> <span class="icon-arrow">↗</span></a></div>
+  </div>
+</section>
+
+
+<!-- COMMUNITY IMPACT -->
+<section id="community-impact" class="community-impact-section" data-cms-section="community-impact" aria-labelledby="community-impact-title">
+  <div class="wrap">
+    <div class="community-impact-intro reveal">
+      <div>
+        <p class="eyebrow" data-i18n="community.eyebrow">Community Impact</p>
+        <h2 id="community-impact-title" data-i18n="community.heading">Leaving a useful mark on the professional community.</h2>
+      </div>
+      <p class="community-impact-lead" data-i18n="community.lead">I believe professional growth becomes more meaningful when knowledge, practice, and opportunities are shared with others who are starting their journey.</p>
+    </div>
+
+    <div class="community-impact-grid">
+      <article class="community-impact-card reveal">
+        <div class="community-impact-number">01</div>
+        <div class="community-impact-card-body">
+          <span class="community-impact-kicker" data-i18n="community.case.kicker">Practical Learning</span>
+          <h3 data-i18n="community.case.title">Case Lab</h3>
+          <p data-i18n="community.case.desc">A practical space for finance case studies and applied exercises, created for learners who may not easily find structured real-world practice and free learning resources.</p>
+          <a class="community-impact-link" href="https://case-lab.pages.dev/" target="_blank" rel="noopener" data-i18n="community.case.link">Explore Case Lab ↗</a>
+        </div>
+      </article>
+
+      <article class="community-impact-card reveal">
+        <div class="community-impact-number">02</div>
+        <div class="community-impact-card-body">
+          <span class="community-impact-kicker" data-i18n="community.exam.kicker">Assessment & Achievement</span>
+          <h3 data-i18n="community.exam.title">Finance Exam Platform</h3>
+          <p data-i18n="community.exam.desc">An assessment platform that helps learners test their understanding, evaluate practical skills, take exams based on free resources, and earn an achievement certificate when they complete the required assessment.</p>
+          <a class="community-impact-link" href="https://ahmed-finance-exam.ahmedelsheshtawy-training.workers.dev/" target="_blank" rel="noopener" data-i18n="community.exam.link">Explore the Exam Platform ↗</a>
+        </div>
+      </article>
+    </div>
+
+    <div class="community-impact-note reveal">
+      <span class="community-impact-note-mark">↗</span>
+      <p data-i18n="community.note">The goal is simple: make useful learning resources easier to access, create a way to practice and measure progress, and leave something that can help the next person move forward.</p>
+    </div>
   </div>
 </section>
 
@@ -1969,6 +2001,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var desc=getSetting('site.meta_description');if(desc){var md=document.querySelector('meta[name="description"]')||document.createElement('meta');md.name='description';md.content=desc;if(!md.parentNode)document.head.appendChild(md);}
     var accent=getSetting('site.accent_color');if(accent)document.documentElement.style.setProperty('--accent',accent);
     document.documentElement.classList.toggle('effects-off',getSetting('site.effects_enabled')==='0');
+    var community=document.getElementById('community-impact');if(community)community.style.display=getSetting('community.impact.visible')==='1'?'block':'none';
     ['brand','loader'].forEach(function(kind){
       var text=getSetting('site.'+(kind==='brand'?'brand_mark':'loader_mark'))||'AE';
       var logo=getSetting('site.'+(kind==='brand'?'brand_logo_url':'loader_logo_url'));
