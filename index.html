@@ -1195,6 +1195,21 @@ html[dir="rtl"] .util-toggles{margin-left:0; margin-right:8px;}
   }
 }
 
+
+/* Community impact — calm, simple, and consistent with the existing portfolio */
+.community-impact-section{background:#fff;color:#171717;}
+.community-impact-section .section-head h2{max-width:780px;}
+.community-impact-intro{max-width:720px;color:#626262;font-size:17px;line-height:1.75;margin:18px 0 0;}
+.community-impact-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:36px;}
+.impact-card{display:flex;flex-direction:column;align-items:flex-start;min-height:245px;padding:28px;border:1px solid #e8e5e1;border-radius:16px;background:#fff;color:#171717;text-decoration:none;transition:transform .2s ease,border-color .2s ease;}
+.impact-card:hover{transform:translateY(-3px);border-color:var(--accent);}
+.impact-card-kicker{font-size:11px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:var(--accent);margin-bottom:20px;}
+.impact-card h3{font-size:22px;line-height:1.25;letter-spacing:-.03em;margin:0 0 12px;}
+.impact-card p{font-size:14px;line-height:1.7;color:#626262;margin:0 0 22px;}
+.impact-card-link{margin-top:auto;font-size:13px;font-weight:700;color:var(--accent);}
+.impact-card-note{background:#f8f7f5;border-color:#f0eeeb;}
+@media(max-width:860px){.community-impact-grid{grid-template-columns:1fr;}.impact-card{min-height:0;padding:24px;}.community-impact-intro{font-size:16px;}}
+
 </style>
 </head>
 <body>
@@ -1287,31 +1302,43 @@ html[dir="rtl"] .util-toggles{margin-left:0; margin-right:8px;}
         <div class="about-links" aria-label="Professional profiles and platforms">
           <a class="project-link" href="https://eg.linkedin.com/in/ahmedelsheshtawyofficial" target="_blank" rel="noopener">LinkedIn ↗</a>
           <a class="project-link" href="https://credentials.corporatefinanceinstitute.com/c7e4b58e-5e39-432a-b7c1-303a56d34c7c" target="_blank" rel="noopener">CFI FMVA® Credential ↗</a>
-          <a class="project-link" href="https://ahmedel-sheshtawy.github.io/Our-Platforms/" target="_blank" rel="noopener">Our Platforms ↗</a>
+          <a class="project-link" href="#impact" data-i18n="about.impactLink">Community Impact ↓</a>
         </div>
       </div>
     </div>
 
     <div class="info-cards reveal" style="margin-top:48px;">
       <div class="info-card">
-        <div><span class="status-tag" data-i18n="about.card1.tag">Certification</span><b>FMVA®</b></div>
-        <small data-i18n="about.card1.sub">Financial Modeling &amp; Valuation Analyst</small>
+        <div><span class="status-tag" data-i18n="about.card1.tag">Certification</span><b>FPAP</b></div>
+        <small data-i18n="about.card1.sub">FP&amp;A Professional</small>
       </div>
       <div class="info-card">
-        <div><span class="status-tag" data-i18n="about.card2.tag">Score</span><b>95%</b></div>
-        <small data-i18n="about.card2.sub">FMVA Score</small>
+        <div><span class="status-tag" data-i18n="about.card2.tag">Score</span><b>98%</b></div>
+        <small data-i18n="about.card2.sub">FPAP Exam Score</small>
       </div>
       <div class="info-card">
         <div><span class="status-tag" data-i18n="about.card3.tag">Focus</span><b data-i18n="about.card3.val">Financial Analysis</b></div>
         <small data-i18n="about.card3.sub">Core focus area</small>
       </div>
       <div class="info-card status-developing">
-        <div><span class="status-tag dev" data-i18n="about.card4.tag">In progress</span><b>FP&amp;A</b></div>
-        <small data-i18n="about.card4.sub">Currently developing</small>
+        <div><span class="status-tag" data-i18n="about.card4.tag">Professional</span><b>FMVA®</b></div>
+        <small data-i18n="about.card4.sub">Financial Modeling &amp; Valuation Analyst</small>
       </div>
     </div>
   </div>
 </section>
+
+<!-- CERTIFICATIONS -->
+<section id="certs">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow" data-i18n="certs.eyebrow">Learning &amp; Development</p>
+      <h2 data-i18n="certs.heading">Always building.</h2>
+    </div>
+    <div id="certsContainer" class="certs-grid reveal"></div>
+  </div>
+</section>
+
 
 <!-- WHAT I DO -->
 <section id="what-i-do">
@@ -1337,6 +1364,36 @@ html[dir="rtl"] .util-toggles{margin-left:0; margin-right:8px;}
   </div>
 </section>
 
+<!-- COMMUNITY IMPACT -->
+<section id="impact" class="community-impact-section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow" data-i18n="impact.eyebrow">Community Impact</p>
+      <h2 data-i18n="impact.heading">Making finance knowledge more accessible.</h2>
+      <p class="community-impact-intro" data-i18n="impact.intro">I build practical, accessible learning experiences that help learners move from understanding concepts to applying them and proving their skills.</p>
+    </div>
+    <div class="community-impact-grid reveal">
+      <a class="impact-card" href="https://case-lab.pages.dev/" target="_blank" rel="noopener">
+        <span class="impact-card-kicker" data-i18n="impact.case.kicker">Practice</span>
+        <h3 data-i18n="impact.case.title">Case Lab</h3>
+        <p data-i18n="impact.case.desc">Practical case studies that help learners apply financial concepts to realistic business scenarios.</p>
+        <span class="impact-card-link" data-i18n="impact.explore">Explore platform ↗</span>
+      </a>
+      <a class="impact-card" href="https://ahmed-finance-exam.ahmedelsheshtawy-training.workers.dev/" target="_blank" rel="noopener">
+        <span class="impact-card-kicker" data-i18n="impact.exam.kicker">Assessment</span>
+        <h3 data-i18n="impact.exam.title">Learning &amp; Assessment Platform</h3>
+        <p data-i18n="impact.exam.desc">Free learning resources, skill assessments, and achievement certificates that help learners track their progress.</p>
+        <span class="impact-card-link" data-i18n="impact.explore">Explore platform ↗</span>
+      </a>
+      <div class="impact-card impact-card-note">
+        <span class="impact-card-kicker" data-i18n="impact.goal.kicker">The goal</span>
+        <h3 data-i18n="impact.goal.title">Learn. Practice. Prove your skills.</h3>
+        <p data-i18n="impact.goal.desc">Reduce the gap between learning finance theory and building confidence through hands-on practice.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- VIDEOS -->
 <section id="videos" style="background:var(--surface);">
   <div class="wrap">
@@ -1350,17 +1407,6 @@ html[dir="rtl"] .util-toggles{margin-left:0; margin-right:8px;}
   </div>
 </section>
 
-<!-- APPROACH -->
-<section id="approach">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <p class="eyebrow" data-i18n="approach.eyebrow">My Approach</p>
-      <h2 data-i18n="approach.heading">A simple way I approach financial problems.</h2>
-    </div>
-    <div id="approachContainer" class="approach-list reveal"></div>
-  </div>
-</section>
-
 <!-- TOOLS & SKILLS -->
 <section id="skills" style="background:var(--surface);">
   <div class="wrap">
@@ -1369,17 +1415,6 @@ html[dir="rtl"] .util-toggles{margin-left:0; margin-right:8px;}
       <h2 data-i18n="skills.heading">Tools behind the work.</h2>
     </div>
     <div id="skillsContainer" class="tools-grid cms-skills-grid reveal"></div>
-  </div>
-</section>
-
-<!-- CERTIFICATIONS -->
-<section id="certs">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <p class="eyebrow" data-i18n="certs.eyebrow">Learning &amp; Development</p>
-      <h2 data-i18n="certs.heading">Always building.</h2>
-    </div>
-    <div id="certsContainer" class="certs-grid reveal"></div>
   </div>
 </section>
 
@@ -1499,14 +1534,28 @@ var translations = {
   "about.p1":{en:"I'm an Accounting graduate with a strong interest in financial analysis, financial modeling, and FP&A.",ar:"أنا خريج محاسبة ولديّ اهتمام كبير بالتحليل المالي والنمذجة المالية والتخطيط والتحليل المالي (FP&A)."},
   "about.p2":{en:"My focus is not simply on reporting numbers, but on understanding what drives financial performance and turning financial information into useful insights.",ar:"تركيزي الأساسي ليس مجرد عرض الأرقام، بل فهم ما يقود الأداء المالي وتحويل المعلومات المالية إلى رؤى مفيدة وقابلة للتطبيق."},
   "about.card1.tag":{en:"Certification",ar:"شهادة"},
-  "about.card1.sub":{en:"Financial Modeling & Valuation Analyst",ar:"محلل النمذجة والتقييم المالي"},
+  "about.card1.sub":{en:"FP&A Professional",ar:"محترف التخطيط والتحليل المالي"},
   "about.card2.tag":{en:"Score",ar:"الدرجة"},
-  "about.card2.sub":{en:"FMVA Score",ar:"درجة اختبار FMVA"},
+  "about.card2.sub":{en:"FPAP Exam Score",ar:"درجة اختبار FPAP"},
   "about.card3.tag":{en:"Focus",ar:"التركيز"},
   "about.card3.val":{en:"Financial Analysis",ar:"التحليل المالي"},
   "about.card3.sub":{en:"Core focus area",ar:"مجال التركيز الأساسي"},
-  "about.card4.tag":{en:"In progress",ar:"قيد التطوير"},
-  "about.card4.sub":{en:"Currently developing",ar:"أعمل عليه حاليًا"},
+  "about.card4.tag":{en:"Professional",ar:"اعتماد مهني"},
+  "about.card4.sub":{en:"Financial Modeling & Valuation Analyst",ar:"محلل النمذجة والتقييم المالي"},
+  "about.impactLink":{en:"Community Impact ↓",ar:"الأثر المجتمعي ↓"},
+  "impact.eyebrow":{en:"Community Impact",ar:"الأثر المجتمعي"},
+  "impact.heading":{en:"Making finance knowledge more accessible.",ar:"نجعل المعرفة المالية أكثر إتاحة للجميع."},
+  "impact.intro":{en:"I build practical, accessible learning experiences that help learners move from understanding concepts to applying them and proving their skills.",ar:"أعمل على بناء تجارب تعليمية عملية ومتاحة تساعد المتعلمين على الانتقال من فهم المفاهيم إلى تطبيقها وإثبات مهاراتهم."},
+  "impact.case.kicker":{en:"Practice",ar:"تطبيق عملي"},
+  "impact.case.title":{en:"Case Lab",ar:"Case Lab – مختبر دراسات الحالة"},
+  "impact.case.desc":{en:"Practical case studies that help learners apply financial concepts to realistic business scenarios.",ar:"دراسات حالة عملية تساعد المتعلمين على تطبيق المفاهيم المالية على سيناريوهات واقعية في عالم الأعمال."},
+  "impact.exam.kicker":{en:"Assessment",ar:"تقييم المهارات"},
+  "impact.exam.title":{en:"Learning & Assessment Platform",ar:"منصة التعلم والتقييم"},
+  "impact.exam.desc":{en:"Free learning resources, skill assessments, and achievement certificates that help learners track their progress.",ar:"مصادر تعليمية مجانية واختبارات لتقييم المهارات وشهادات إنجاز تساعد المتعلمين على متابعة تقدمهم."},
+  "impact.explore":{en:"Explore platform ↗",ar:"استكشف المنصة ↗"},
+  "impact.goal.kicker":{en:"The goal",ar:"الهدف"},
+  "impact.goal.title":{en:"Learn. Practice. Prove your skills.",ar:"تعلّم. طبّق. أثبت مهاراتك."},
+  "impact.goal.desc":{en:"Reduce the gap between learning finance theory and building confidence through hands-on practice.",ar:"تقليل الفجوة بين تعلم النظريات المالية وبناء الثقة من خلال التطبيق العملي."},
 
   "services.eyebrow":{en:"What I Work On",ar:"مجالات عملي"},
   "services.heading":{en:"What I do with the numbers.",ar:"ماذا أفعل بالأرقام."},
@@ -1999,8 +2048,8 @@ document.addEventListener('DOMContentLoaded', function(){
     {title_en:'Business Analysis',title_ar:'تحليل الأعمال',desc_en:'Connecting financial results with the operational drivers behind business performance.',desc_ar:'ربط النتائج المالية بالمحركات التشغيلية وراء أداء الأعمال.'}
   ];
   var FALLBACK_CERTS=[
+    {name_en:'FPAP',name_ar:'FPAP',status_en:'Completed',status_ar:'مكتملة',desc_en:'Financial Planning & Analysis Professional',desc_ar:'محترف التخطيط والتحليل المالي',score:'98%',provider:'CFI',featured:1},
     {name_en:'FMVA®',name_ar:'FMVA®',status_en:'Completed',status_ar:'مكتملة',desc_en:'Financial Modeling & Valuation Analyst',desc_ar:'محلل النمذجة والتقييم المالي',score:'95%',provider:'CFI',featured:1},
-    {name_en:'FPAP',name_ar:'FPAP',status_en:'Currently developing',status_ar:'قيد التطوير حاليًا',desc_en:'Financial Planning & Analysis Professional',desc_ar:'أخصائي التخطيط والتحليل المالي',provider:'CFI',featured:0},
     {name_en:'PMP Diploma',name_ar:'دبلومة PMP',status_en:'30 hours',status_ar:'30 ساعة',desc_en:'Start & Planning',desc_ar:'البدء والتخطيط',featured:0}
   ];
   async function load(){
