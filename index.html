@@ -1198,11 +1198,22 @@ html[dir="rtl"] .util-toggles{margin-left:0; margin-right:8px;}
 }
 
 
-/* Community Impact inherits the same light/dark surfaces as the rest of the portfolio. */
+/* Community Impact: use the same theme tokens as the rest of the site. */
 .community-impact-section{background:var(--surface);color:var(--text);}
 .community-impact-section .section-head h2{max-width:780px;}
 .community-impact-section .community-impact-intro{max-width:720px;color:var(--muted);font-size:17px;line-height:1.75;margin:18px 0 0;}
-@media(max-width:860px){.community-impact-section .community-impact-intro{font-size:16px;}}
+.community-impact-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:36px;}
+.impact-card{display:flex;flex-direction:column;align-items:flex-start;min-height:245px;padding:28px;border:1px solid var(--border);border-radius:16px;background:var(--bg);color:var(--text);text-decoration:none;transition:transform .2s ease,border-color .2s ease;}
+.impact-card:hover{transform:translateY(-3px);border-color:var(--accent);}
+.impact-card-kicker{font-size:11px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:var(--accent);margin-bottom:20px;}
+.impact-card h3{font-size:22px;line-height:1.25;letter-spacing:-.03em;margin:0 0 12px;color:var(--text);}
+.impact-card p{font-size:14px;line-height:1.7;color:var(--muted);margin:0 0 22px;}
+.impact-card-link{margin-top:auto;font-size:13px;font-weight:700;color:var(--accent);}
+.impact-card-note{background:var(--surface);border-color:var(--border);}
+/* Keep About concise while avoiding an oversized blank gap before credentials. */
+#about{padding-bottom:68px;}
+#certs{padding-top:68px;}
+@media(max-width:860px){.community-impact-grid{grid-template-columns:1fr;}.impact-card{min-height:0;padding:24px;}.community-impact-section .community-impact-intro{font-size:16px;}#about{padding-bottom:54px;}#certs{padding-top:54px;}}
 
 </style>
 </head>
@@ -1300,6 +1311,25 @@ html[dir="rtl"] .util-toggles{margin-left:0; margin-right:8px;}
         </div>
       </div>
     </div>
+
+    <div class="info-cards reveal" style="margin-top:48px;">
+      <div class="info-card">
+        <div><span class="status-tag" data-i18n="about.card1.tag">Certification</span><b>FPAP</b></div>
+        <small data-i18n="about.card1.sub">FP&amp;A Professional</small>
+      </div>
+      <div class="info-card">
+        <div><span class="status-tag" data-i18n="about.card2.tag">Score</span><b>98%</b></div>
+        <small data-i18n="about.card2.sub">FPAP Exam Score</small>
+      </div>
+      <div class="info-card">
+        <div><span class="status-tag" data-i18n="about.card3.tag">Focus</span><b data-i18n="about.card3.val">Financial Analysis</b></div>
+        <small data-i18n="about.card3.sub">Core focus area</small>
+      </div>
+      <div class="info-card status-developing">
+        <div><span class="status-tag" data-i18n="about.card4.tag">Professional</span><b>FMVA®</b></div>
+        <small data-i18n="about.card4.sub">Financial Modeling &amp; Valuation Analyst</small>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1346,6 +1376,25 @@ html[dir="rtl"] .util-toggles{margin-left:0; margin-right:8px;}
       <p class="eyebrow" data-i18n="impact.eyebrow">Community Impact</p>
       <h2 data-i18n="impact.heading">Making finance knowledge more accessible.</h2>
       <p class="community-impact-intro" data-i18n="impact.intro">I build practical, accessible learning experiences that help learners move from understanding concepts to applying them and proving their skills.</p>
+    </div>
+    <div class="community-impact-grid reveal">
+      <a class="impact-card" href="https://case-lab.pages.dev/" target="_blank" rel="noopener">
+        <span class="impact-card-kicker" data-i18n="impact.case.kicker">Practice</span>
+        <h3 data-i18n="impact.case.title">Case Lab</h3>
+        <p data-i18n="impact.case.desc">Practical case studies that help learners apply financial concepts to realistic business scenarios.</p>
+        <span class="impact-card-link" data-i18n="impact.explore">Explore platform ↗</span>
+      </a>
+      <a class="impact-card" href="https://ahmed-finance-exam.ahmedelsheshtawy-training.workers.dev/" target="_blank" rel="noopener">
+        <span class="impact-card-kicker" data-i18n="impact.exam.kicker">Assessment</span>
+        <h3 data-i18n="impact.exam.title">Learning &amp; Assessment Platform</h3>
+        <p data-i18n="impact.exam.desc">Free learning resources, skill assessments, and achievement certificates that help learners track their progress.</p>
+        <span class="impact-card-link" data-i18n="impact.explore">Explore platform ↗</span>
+      </a>
+      <div class="impact-card impact-card-note">
+        <span class="impact-card-kicker" data-i18n="impact.goal.kicker">The goal</span>
+        <h3 data-i18n="impact.goal.title">Learn. Practice. Prove your skills.</h3>
+        <p data-i18n="impact.goal.desc">Reduce the gap between learning finance theory and building confidence through hands-on practice.</p>
+      </div>
     </div>
   </div>
 </section>
